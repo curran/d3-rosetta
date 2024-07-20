@@ -60,8 +60,7 @@ render();
 ```
 
 
-## Usage in React
-
+## Usage in React (untested)
 
 Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS (plus [Vite hot module replacement](https://vitejs.dev/guide/api-hmr)):
 
@@ -78,7 +77,7 @@ export const App = () => {
 }
 ```
 
-## Usage in Svelte
+## Usage in Svelte (untested)
 
 In Svelte, we can leverage reactive statements and the `onMount` lifecycle hook to implement the state management infrastructure that invokes `main`. Here's an example:
 
@@ -112,7 +111,7 @@ In Svelte, we can leverage reactive statements and the `onMount` lifecycle hook 
 
 ```
 
-## Usage in Vue
+## Usage in Vue (untested)
 
 In Vue, we can use the `ref` and `watchEffect` functions from Vue's Composition API to manage state and trigger updates. Here's an example:
 
@@ -155,42 +154,11 @@ export default {
 
 In both Svelte and Vue examples, we bind the container DOM element to a variable and use the appropriate lifecycle hooks to manage state updates and re-rendering of the visualization. The `setState` function is responsible for updating the state and re-invoking the `main` function with the new state.
 
-## Usage in Angular
+## Usage in Angular (untested)
 
 In Angular, we can use Angular's lifecycle hooks and `@ViewChild` decorator to implement the state management infrastructure that invokes `main`. Here's an example:
 
 ```typescript
-import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
-import { main } from './viz/index.js';
-
-@Component({
-  selector: 'app-root',
-  template: `<div #container class="viz-container"></div>`,
-})
-export class AppComponent implements AfterViewInit {
-  @ViewChild('container', { static: true }) container!: ElementRef;
-  state: any = {};
-
-  setState = (next: (state: any) => any) => {
-    this.state = next(this.state);
-    this.render();
-  };
-
-  render() {
-    main(this.container.nativeElement, {
-      state: this.state,
-      setState: this.setState,
-    });
-  }
-
-  ngAfterViewInit() {
-    this.render();
-  }
-}
-```
-
-In this example, the `AppComponent` class uses the `@ViewChild` decorator to get a reference to the container element. The `setState` method updates the state and re-renders the visualization. The `render` method invokes the `main` function with the current state and `setState` function. The `ngAfterViewInit` lifecycle hook ensures that the visualization is rendered once the view is initialized.
-
 import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { main } from './viz/index.js';
@@ -223,6 +191,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 }
+```
 
 ## Memoization
 

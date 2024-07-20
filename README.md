@@ -31,7 +31,7 @@ The above code snippet defines `main`, the entry point of our rendering logic.
 - `state` is initially an empty object `{}` and can be updated using `setState`
 - `setState` is a function that updates the state using [immutable update patterns](https://redux.js.org/usage/structuring-reducers/immutable-update-patterns)
 
-Whenever `setState` is invoked, `main` is executed and passed the new definition of `state`.
+Whenever `setState` is invoked, `main` is executed _again_ and passed the new definition of `state`. Therefore `main` needs to be [idempotent](https://en.wikipedia.org/wiki/Idempotence), in other words `main` needs to be able to run multiple times without causing problems.
 
 ## Memoization
 

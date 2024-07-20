@@ -33,34 +33,9 @@ The above code snippet defines `main`, the entry point of our rendering logic.
 
 Whenever `setState` is invoked, `main` is executed _again_ and passed the new definition of `state`. Therefore `main` needs to be [idempotent](https://en.wikipedia.org/wiki/Idempotence), in other words `main` needs to be able to run multiple times without causing problems.
 
-## Memoization
-
-The pattern of unidirectional data flow includes a single monolithic function that executes every time state changes. Therefore, it is likely that not all of the internals of that function must execute on each and every update to the state. Especially for relatively expensive computations like data processing (e.g. filtering or aggregation), it makes sense to avoid recomputing the same derived values unnecessarily. This is the problem solved by memoization.
-
-In React, memoization can be achieved with the `useMemo` hook. The `d3-rosetta` library introduces a similar construct for memoization based on the idea of storing memoized values on the DOM. This approach makes the utility compatible with hot reloading, wherein new code is injected at runtime. If the memoized values were stored in a JavaScript closure, they would be lost on each hot reload. Here's how this memoization utility can be used:
-
-```js
-import { Memoize } from 'd3-rosetta';
-import { processData } from './processData';
-
-export const main = (container, { state, setState }) => {
-
-  const data = loadData({ state, setState });
-  if(!data) return;
-
-  const memoize = Memoize(container);
-
-  const processedData = memoize(() => {
-    return processData(data);
-  }, [
-    data
-  ]);
-
-  visualize(container, { processedData });
-}
-```
-
 ## Usage in Vanilla JS
+
+Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS (plus [Vite hot module replacement](https://vitejs.dev/guide/api-hmr)):
 
 ```js
 import './style.css';
@@ -99,6 +74,34 @@ if (import.meta.hot) {
   );
 }
 ```
+
+## Memoization
+
+The pattern of unidirectional data flow includes a single monolithic function that executes every time state changes. Therefore, it is likely that not all of the internals of that function must execute on each and every update to the state. Especially for relatively expensive computations like data processing (e.g. filtering or aggregation), it makes sense to avoid recomputing the same derived values unnecessarily. This is the problem solved by memoization.
+
+In React, memoization can be achieved with the `useMemo` hook. The `d3-rosetta` library introduces a similar construct for memoization based on the idea of storing memoized values on the DOM. This approach makes the utility compatible with hot reloading, wherein new code is injected at runtime. If the memoized values were stored in a JavaScript closure, they would be lost on each hot reload. Here's how this memoization utility can be used:
+
+```js
+import { Memoize } from 'd3-rosetta';
+import { processData } from './processData';
+
+export const main = (container, { state, setState }) => {
+
+  const data = loadData({ state, setState });
+  if(!data) return;
+
+  const memoize = Memoize(container);
+
+  const processedData = memoize(() => {
+    return processData(data);
+  }, [
+    data
+  ]);
+
+  visualize(container, { processedData });
+}
+```
+
 
 ## Usage in React
 ## Usage in Svelte

@@ -79,8 +79,81 @@ export const App = () => {
 ```
 
 ## Usage in Svelte
+
+In Svelte, we can leverage reactive statements and the `onMount` lifecycle hook to implement the state management infrastructure that invokes `main`. Here's an example:
+
+```svelte
+<script>
+  import { onMount } from 'svelte';
+  import { main } from './viz/index.js';
+
+  let state = {};
+  let container;
+
+  const setState = (next) => {
+    state = next(state);
+  };
+
+  $: render = () => {
+    if (container) {
+      main(container, {
+        state,
+        setState,
+      });
+    }
+  };
+
+  onMount(() => {
+    render();
+  });
+</script>
+
+<div bind:this={container} class="viz-container"></div>
+
+```
+
 ## Usage in Vue
 
+In Vue, we can use the `ref` and `watchEffect` functions from Vue's Composition API to manage state and trigger updates. Here's an example:
+
+```vue
+<template>
+  <div ref="container" class="viz-container"></div>
+</template>
+
+<script>
+import { ref, watchEffect, onMounted } from 'vue';
+import { main } from './viz/index.js';
+
+export default {
+  setup() {
+    const state = ref({});
+    const container = ref(null);
+
+    const setState = (next) => {
+      state.value = next(state.value);
+    };
+
+    onMounted(() => {
+      watchEffect(() => {
+        if (container.value) {
+          main(container.value, {
+            state: state.value,
+            setState,
+          });
+        }
+      });
+    });
+
+    return {
+      container,
+    };
+  },
+};
+</script>
+```
+
+In both Svelte and Vue examples, we bind the container DOM element to a variable and use the appropriate lifecycle hooks to manage state updates and re-rendering of the visualization. The `setState` function is responsible for updating the state and re-invoking the `main` function with the new state.
 
 
 ## Memoization

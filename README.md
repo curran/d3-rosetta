@@ -35,14 +35,12 @@ Whenever `setState` is invoked, `main` is executed _again_ and passed the new de
 
 ## Usage in Vanilla JS
 
-Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS (plus [Vite hot module replacement](https://vitejs.dev/guide/api-hmr)):
+Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS:
 
 ```js
-import './style.css';
-import { main as originalMain } from './viz/index.js';
+import { main } from './viz/index.js';
 
 let state = {};
-let main = originalMain;
 
 const container = document.querySelector('.viz-container');
 
@@ -59,21 +57,31 @@ const setState = (next) => {
 };
 
 render();
+```
 
-// Support hot module replacement with Vite
-// See https://vitejs.dev/guide/api-hmr.html#hot-accept
-if (import.meta.hot) {
-  import.meta.hot.accept(
-    './viz/index.js',
-    (newModule) => {
-      if (newModule) {
-        main = newModule.main;
-        render();
-      }
-    }
-  );
+
+## Usage in React
+
+
+Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS (plus [Vite hot module replacement](https://vitejs.dev/guide/api-hmr)):
+
+```js
+import { main } from './viz/index.js';
+export const App = () => {
+  const [state, setState] = useState({});
+  const ref = useRef(null);
+  useEffect(() => {
+    const container = ref.current;
+    main(container, { state, setState });
+  },[state])
+  return <div ref={ref}/>;
 }
 ```
+
+## Usage in Svelte
+## Usage in Vue
+
+
 
 ## Memoization
 
@@ -101,11 +109,6 @@ export const main = (container, { state, setState }) => {
   visualize(container, { processedData });
 }
 ```
-
-
-## Usage in React
-## Usage in Svelte
-## Usage in Vue
 
 
 

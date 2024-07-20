@@ -8,6 +8,13 @@ WORK IN PROGRESS - NOT READY FOR USE
 
 React, Svelte, Vue, Angular and other frameworks provide various solutions for state management and DOM manipulation. D3 provides data transormation utilities for data visualization and other uses, and can also manipulate the DOM. When a technical challenge in interactive data visualization is solved, ideally that solution an be re-used across various frameworks, thus avoiding the need to re-implement the solution multiple times for multiple frameworks. This is why `d3-rosetta` exists.
 
+Why not re-implement logic in your favorite framework every time? Because D3 is the "best tool for the job" when it comes to:
+- Axes
+- Transitions
+- Behaviors (zoom, drag, brush)
+
+For D3 axes, transitions, and behaviors to work, they really do need access to the DOM. Replicating these in frameworks is notoriously difficult.
+
 ## Unidirectional Data Flow
 
 One pattern that can be invoked cleanly from multiple frameworks is that of unidirectional data flow. In this paradigm, a single monolithic function is responsible for updating the DOM or otherwise rendering pixels based on updates to a single monolithic state. A similar pattern is commonly seen in React logic with a combination of `useState` and `useEffect`. A simple implementation of unidirectional data flow works well for small problems, but as complexity and data scale up, a need arises for performance optimization. That's why `d3-rosetta` exists; to provide utilities for performance optimization and other needs that commonly arise when working within the unidirectional data flow paradigm.

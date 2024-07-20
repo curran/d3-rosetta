@@ -1,9 +1,10 @@
 # d3-rosetta
-Maximize framework interoperability for interactive graphics
+
+The [D3](https://d3js.org/) Rosetta Stone for maximum framework interoperability
 
 WORK IN PROGRESS - NOT READY FOR USE
 
-## The Problem: Re-use D3-based logic in component frameworks
+## The Problem: Re-use D3-based logic across component frameworks
 
 React, Svelte, Vue, Angular and other frameworks provide various solutions for state management and DOM manipulation. D3 provides data transormation utilities for data visualization and other uses, and can also manipulate the DOM. When a technical challenge in interactive data visualization is solved, ideally that solution an be re-used across various frameworks, thus avoiding the need to re-implement the solution multiple times for multiple frameworks. This is why `d3-rosetta` exists.
 
@@ -37,3 +38,51 @@ export const main = (container, { state, setState }) => {
   visualize(container, { processedData });
 }
 ```
+
+## Usage in Vanilla JS
+
+```js
+import './style.css';
+import { main as originalMain } from './viz/index.js';
+
+let state = {};
+let main = originalMain;
+
+const container = document.querySelector('.viz-container');
+
+const render = () => {
+  main(container, {
+    state,
+    setState,
+  });
+};
+
+const setState = (next) => {
+  state = next(state);
+  render();
+};
+
+render();
+
+// Support hot module replacement with Vite
+// See https://vitejs.dev/guide/api-hmr.html#hot-accept
+if (import.meta.hot) {
+  import.meta.hot.accept(
+    './viz/index.js',
+    (newModule) => {
+      if (newModule) {
+        main = newModule.main;
+        render();
+      }
+    }
+  );
+}
+```
+
+## Usage in React
+## Usage in Svelte
+## Usage in Vue
+
+
+
+

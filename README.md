@@ -4,7 +4,7 @@ The [D3](https://d3js.org/) Rosetta Stone for maximum framework interoperability
 
 WORK IN PROGRESS - NOT READY FOR USE
 
-## The Problem: Re-use D3-based logic across component frameworks
+## The Problem: Re-use D3 rendering logic across frameworks
 
 React, Svelte, Vue, Angular and other frameworks provide various solutions for state management and DOM manipulation. D3 provides data transormation utilities for data visualization and other uses, and can also manipulate the DOM. When a technical challenge in interactive data visualization is solved, ideally that solution an be re-used across various frameworks, thus avoiding the need to re-implement the solution multiple times for multiple frameworks. This is why `d3-rosetta` exists.
 
@@ -15,7 +15,7 @@ Why not re-implement logic in your favorite framework every time? Because D3 is 
 
 For D3 axes, transitions, and behaviors to work, they really do need access to the DOM. Replicating these in frameworks is notoriously difficult.
 
-## Unidirectional Data Flow
+## The Solution: Unidirectional Data Flow
 
 One pattern that can be invoked cleanly from multiple frameworks is that of unidirectional data flow. In this paradigm, a single monolithic function is responsible for updating the DOM or otherwise rendering pixels based on updates to a single monolithic state. A similar pattern is commonly seen in React logic with a combination of `useState` and `useEffect`. A simple implementation of unidirectional data flow works well for small problems, but as complexity and data scale up, a need arises for performance optimization. That's why `d3-rosetta` exists; to provide utilities for performance optimization and other needs that commonly arise when working within the unidirectional data flow paradigm.
 
@@ -155,6 +155,74 @@ export default {
 
 In both Svelte and Vue examples, we bind the container DOM element to a variable and use the appropriate lifecycle hooks to manage state updates and re-rendering of the visualization. The `setState` function is responsible for updating the state and re-invoking the `main` function with the new state.
 
+## Usage in Angular
+
+In Angular, we can use Angular's lifecycle hooks and `@ViewChild` decorator to implement the state management infrastructure that invokes `main`. Here's an example:
+
+```typescript
+import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { main } from './viz/index.js';
+
+@Component({
+  selector: 'app-root',
+  template: `<div #container class="viz-container"></div>`,
+})
+export class AppComponent implements AfterViewInit {
+  @ViewChild('container', { static: true }) container!: ElementRef;
+  state: any = {};
+
+  setState = (next: (state: any) => any) => {
+    this.state = next(this.state);
+    this.render();
+  };
+
+  render() {
+    main(this.container.nativeElement, {
+      state: this.state,
+      setState: this.setState,
+    });
+  }
+
+  ngAfterViewInit() {
+    this.render();
+  }
+}
+```
+
+In this example, the `AppComponent` class uses the `@ViewChild` decorator to get a reference to the container element. The `setState` method updates the state and re-renders the visualization. The `render` method invokes the `main` function with the current state and `setState` function. The `ngAfterViewInit` lifecycle hook ensures that the visualization is rendered once the view is initialized.
+
+import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { main } from './viz/index.js';
+
+@Component({
+  selector: 'app-root',
+  template: `<div #container class="viz-container"></div>`,
+})
+export class AppComponent implements AfterViewInit {
+  @ViewChild('container', { static: true }) container!: ElementRef;
+  private stateSubject = new BehaviorSubject<any>({});
+  state$ = this.stateSubject.asObservable();
+
+  setState = (next: (state: any) => any) => {
+    const currentState = this.stateSubject.getValue();
+    const newState = next(currentState);
+    this.stateSubject.next(newState);
+  };
+
+  render() {
+    main(this.container.nativeElement, {
+      state: this.stateSubject.getValue(),
+      setState: this.setState,
+    });
+  }
+
+  ngAfterViewInit() {
+    this.state$.subscribe(() => {
+      this.render();
+    });
+  }
+}
 
 ## Memoization
 

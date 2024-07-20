@@ -18,4 +18,22 @@ The pattern of unidirectional data flow includes a single monolithic function th
 In React, memoization can be achieved with the `useMemo` hook. The `d3-rosetta` library introduces a similar construct for memoization based on the idea of storing memoized values on the DOM. This approach makes the utility compatible with hot reloading, wherein new code is injected at runtime. If the memoized values were stored in a JavaScript closure, they would be lost on each hot reload. Here's how this memoization utility can be used:
 
 ```js
+import { Memoize } from 'd3-rosetta';
+import { processData } from './processData';
+
+export const main = (container, { state, setState }) => {
+
+  const data = loadData({ state, setState });
+  if(!data) return;
+
+  const memoize = Memoize(container);
+
+  const processedData = memoize(() => {
+    return processData(data);
+  }, [
+    data
+  ]);
+
+  visualize(container, { processedData });
+}
 ```

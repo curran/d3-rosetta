@@ -1,6 +1,6 @@
 # d3-unidirectional
 
-The [D3](https://d3js.org/) utility for maximizing framework interoperability through unidirectional data flow.
+A utility library for maximizing framework interoperability of [D3](https://d3js.org/) rendering logic through unidirectional data flow.
 
 WORK IN PROGRESS - NOT READY FOR USE
 

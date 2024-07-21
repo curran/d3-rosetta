@@ -9,6 +9,7 @@ WORK IN PROGRESS - NOT READY FOR USE
 React, Svelte, Vue, Angular and other frameworks provide various solutions for state management and DOM manipulation. D3 provides data transormation utilities for data visualization and other uses, and can also manipulate the DOM. When a technical challenge in interactive data visualization is solved, ideally that solution an be re-used across various frameworks, thus avoiding the need to re-implement the solution multiple times for multiple frameworks. This is why `d3-rosetta` exists.
 
 Why not re-implement logic in your favorite framework every time? Because D3 is the "best tool for the job" when it comes to:
+
 - Axes
 - Transitions
 - Behaviors (zoom, drag, brush)
@@ -22,7 +23,7 @@ One pattern that can be invoked cleanly from multiple frameworks is that of unid
 ```js
 export const main = (container, { state, setState }) => {
   // Your reusable d3-based rendering logic goes here
-}
+};
 ```
 
 The above code snippet defines `main`, the entry point of our rendering logic.
@@ -38,11 +39,11 @@ Whenever `setState` is invoked, `main` is executed _again_ and passed the new de
 Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS:
 
 ```js
-import { main } from './viz/index.js';
+import { main } from "./viz/index.js";
 
 let state = {};
 
-const container = document.querySelector('.viz-container');
+const container = document.querySelector(".viz-container");
 
 const render = () => {
   main(container, {
@@ -66,16 +67,16 @@ This is the logic implemented in the [VizHub](https://vizhub.com/) runtime envir
 Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS (plus [Vite hot module replacement](https://vitejs.dev/guide/api-hmr)):
 
 ```js
-import { main } from './viz/index.js';
+import { main } from "./viz/index.js";
 export const App = () => {
   const [state, setState] = useState({});
   const ref = useRef(null);
   useEffect(() => {
     const container = ref.current;
     main(container, { state, setState });
-  },[state])
-  return <div ref={ref}/>;
-}
+  }, [state]);
+  return <div ref={ref} />;
+};
 ```
 
 ## Usage in Svelte (untested)
@@ -122,8 +123,8 @@ In Vue, we can use the `ref` and `watchEffect` functions from Vue's Composition 
 </template>
 
 <script>
-import { ref, watchEffect, onMounted } from 'vue';
-import { main } from './viz/index.js';
+import { ref, watchEffect, onMounted } from "vue";
+import { main } from "./viz/index.js";
 
 export default {
   setup() {
@@ -160,16 +161,16 @@ In both Svelte and Vue examples, we bind the container DOM element to a variable
 In Angular, we can use Angular's lifecycle hooks and `@ViewChild` decorator to implement the state management infrastructure that invokes `main`. Here's an example:
 
 ```typescript
-import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { main } from './viz/index.js';
+import { Component, ElementRef, AfterViewInit, ViewChild } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import { main } from "./viz/index.js";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   template: `<div #container class="viz-container"></div>`,
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild('container', { static: true }) container!: ElementRef;
+  @ViewChild("container", { static: true }) container!: ElementRef;
   private stateSubject = new BehaviorSubject<any>({});
   state$ = this.stateSubject.asObservable();
 
@@ -201,26 +202,65 @@ The pattern of unidirectional data flow includes a single monolithic function th
 In React, memoization can be achieved with the `useMemo` hook. The `d3-rosetta` library introduces a similar construct for memoization based on the idea of storing memoized values on the DOM. This approach makes the utility compatible with hot reloading, wherein new code is injected at runtime. If the memoized values were stored in a JavaScript closure, they would be lost on each hot reload. Here's how this memoization utility can be used:
 
 ```js
-import { Memoize } from 'd3-rosetta';
-import { processData } from './processData';
+import { memoize } from "d3-rosetta";
+import { loadData } from "./loadData";
+import { processData } from "./processData";
 
 export const main = (container, { state, setState }) => {
-
   const data = loadData({ state, setState });
-  if(!data) return;
+  if (!data) return;
 
-  const memoize = Memoize(container);
+  const memo = memoize(container);
 
-  const processedData = memoize(() => {
-    return processData(data);
-  }, [
-    data
-  ]);
+  const processedData = memo(() => processData(data), [data]);
 
   visualize(container, { processedData });
-}
+};
 ```
 
+## Data Fetching
 
+In the unidirectional data flow pattern, data fetching is typically done in a separate function that is called before the main rendering function. This function is responsible for fetching data from an API or other source and updating the state with the new data. Here's an example of how data fetching can be implemented:
 
+```js
+const gistURL =
+  "https://gist.githubusercontent.com/curran/9729d3a8ef2a874eedf4fc22f349b2fa/raw/79ce147f4bd1914719bedbe156347ad572ec8e3f/react.json";
 
+export const loadData = ({ state, setState }) => {
+  if (state.data === undefined) {
+    setState((state) => ({
+      ...state,
+      data: null, // Indicate that data is loading
+    }));
+    fetch(gistURL)
+      .then((response) => response.json())
+      .then((data) => {
+        setState((state) => ({
+          ...state,
+          data, // Update state with fetched data
+        }));
+      });
+  }
+  return state.data;
+};
+```
+
+## Measuring Dimensions
+
+A common need when developing data visualizations is to measure the dimensions of the container element and respond to changes in its size. This is useful for creating responsive visualizations that adapt to various screen sizes. Here's an example of how to measure the dimensions of the container element using the ResizeObserver API and unidirectional data flow:
+
+```js
+export const measure = ({ state, setState, container }) => {
+  const { width, height } = state;
+  if (width === undefined) {
+    // Set up a ResizeObserver on `container`
+    const resizeObserver = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      setState((state) => ({ ...state, width, height }));
+    });
+    resizeObserver.observe(container);
+    return null;
+  }
+  return { width, height };
+};
+```

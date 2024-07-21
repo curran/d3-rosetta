@@ -59,6 +59,7 @@ const setState = (next) => {
 render();
 ```
 
+This is the logic implemented in the [VizHub](https://vizhub.com/) runtime environment.
 
 ## Usage in React (untested)
 

@@ -1,0 +1,33 @@
+{
+  "name": "d3-rosetta",
+  "version": "0.0.1",
+  "description": "The D3 Rosetta Stone for maximum framework interoperability",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/curran/d3-rosetta.git"
+  },
+  "keywords": [
+    "D3",
+    "Data",
+    "visualization",
+    "unidirectional",
+    "data",
+    "flow",
+    "state",
+    "management",
+    "memoization"
+  ],
+  "author": "Curran Kelleher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/curran/d3-rosetta/issues"
+  },
+  "homepage": "https://github.com/curran/d3-rosetta#readme",
+  "devDependencies": {
+    "vitest": "^2.0.3"
+  }
+}

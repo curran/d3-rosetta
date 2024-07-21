@@ -67,3 +67,57 @@ test("does recompute if dependencies changed", () => {
   main();
   expect(invocationCount).toBe(2);
 });
+
+test("multiple invocations on one instance", () => {
+  const container = {};
+  let invocationCountASquared = 0;
+  let invocationCountBSquared = 0;
+  let a = 1;
+  let b = 2;
+  const main = () => {
+    const memo = memoize(container);
+
+    const aSquared = memo(() => {
+      invocationCountASquared++;
+      return a * a;
+    }, [a]);
+    expect(aSquared).toBe(a * a);
+
+    const bSquared = memo(() => {
+      invocationCountBSquared++;
+      return b * b;
+    }, [b]);
+    expect(bSquared).toBe(b * b);
+  };
+
+  expect(invocationCountASquared).toBe(0);
+  expect(invocationCountBSquared).toBe(0);
+
+  main();
+  expect(invocationCountASquared).toBe(1);
+  expect(invocationCountBSquared).toBe(1);
+
+  main();
+  expect(invocationCountASquared).toBe(1);
+  expect(invocationCountBSquared).toBe(1);
+
+  a = 2;
+  main();
+  expect(invocationCountASquared).toBe(2);
+  expect(invocationCountBSquared).toBe(1);
+
+  b = 3;
+  main();
+  expect(invocationCountASquared).toBe(2);
+  expect(invocationCountBSquared).toBe(2);
+
+  main();
+  expect(invocationCountASquared).toBe(2);
+  expect(invocationCountBSquared).toBe(2);
+
+  a = 3;
+  b = 4;
+  main();
+  expect(invocationCountASquared).toBe(3);
+  expect(invocationCountBSquared).toBe(3);
+});

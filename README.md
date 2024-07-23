@@ -1,6 +1,11 @@
 # d3-rosetta
 
-A utility library for maximizing framework interoperability of [D3](https://d3js.org/) rendering logic through unidirectional data flow.
+#### Create interactive dataviz with D3.js that "automagically" works as components in various frameworks.
+
+This project `d3-rosetta` is two things:
+
+ * A utility library for maximizing framework interoperability of [D3](https://d3js.org/) rendering logic through unidirectional data flow
+ * A rosetta stone of example implementations of the pattern across frameworks
 
 WORK IN PROGRESS - NOT READY FOR USE
 

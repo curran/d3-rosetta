@@ -1,6 +1,6 @@
 # d3-rosetta
 
-#### Create interactive dataviz with D3.js that "automagically" works as components in various frameworks.
+#### Create interactive dataviz with D3 that works as components in multiple frameworks
 
 This project `d3-rosetta` is two things:
 

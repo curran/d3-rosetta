@@ -1,13 +1,15 @@
 # d3-rosetta
 
-#### Create interactive dataviz with D3 that works as components in multiple frameworks
+**WORK IN PROGRESS - NOT READY FOR USE**
+
+#### The D3 Rosetta Stone for frameworks and plugins
+
+Write your interactive dataviz logic *once* using vanilla JavaScript and D3. Wrap it as a component in any framework.
 
 This project `d3-rosetta` is two things:
 
  * A utility library for maximizing framework interoperability of [D3](https://d3js.org/) rendering logic through unidirectional data flow
  * A rosetta stone of example implementations of the pattern across frameworks
-
-WORK IN PROGRESS - NOT READY FOR USE
 
 ## The Problem: Re-use D3 rendering logic across frameworks
 

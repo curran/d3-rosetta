@@ -8,8 +8,8 @@ Write your interactive dataviz logic *once* using vanilla JavaScript and D3. Wra
 
 This project `d3-rosetta` is two things:
 
- * A utility library for maximizing framework interoperability of [D3](https://d3js.org/) rendering logic through unidirectional data flow
- * A rosetta stone of example implementations of the pattern across frameworks
+ * A library of utilities for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow
+ * A rosetta stone of example implementations of the unidirectional data flow pattern across frameworks
 
 ## The Problem: Re-use D3 rendering logic across frameworks
 

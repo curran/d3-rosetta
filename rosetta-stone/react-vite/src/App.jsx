@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { main } from "./viz";
+import { useEffect, useRef, useState } from 'react';
+import { main } from './viz';
 function App() {
   const ref = useRef(null);
   const [state, setState] = useState({});

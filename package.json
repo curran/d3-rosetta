@@ -2,9 +2,15 @@
   "name": "d3-rosetta",
   "version": "0.0.1",
   "description": "The D3 Rosetta Stone for maximum framework interoperability",
-  "main": "index.js",
+  "main": "dist/d3-rosetta.umd.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "prettier": "prettier {*.*,**/*.*} --write",
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -30,6 +36,7 @@
   "devDependencies": {
     "d3-selection": "^3.0.0",
     "jsdom": "^24.1.1",
+    "vite": "^5.4.0",
     "vitest": "^2.0.5"
   }
 }

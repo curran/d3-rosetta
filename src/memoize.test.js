@@ -1,14 +1,14 @@
-import { expect, test } from "vitest";
-import { memoize } from "./memoize";
+import { expect, test } from 'vitest';
+import { memoize } from './memoize';
 
-test("adds 1 + 2 to equal 3", () => {
+test('adds 1 + 2 to equal 3', () => {
   const container = {};
   const memo = memoize(container);
   const computed = memo(() => 1 + 2, []);
   expect(computed).toBe(3);
 });
 
-test("does not recompute if dependencies unchanged (zero dependencies)", () => {
+test('does not recompute if dependencies unchanged (zero dependencies)', () => {
   const container = {};
   let invocationCount = 0;
   const main = () => {
@@ -26,7 +26,7 @@ test("does not recompute if dependencies unchanged (zero dependencies)", () => {
   expect(invocationCount).toBe(1);
 });
 
-test("does not recompute if dependencies unchanged (2 dependencies)", () => {
+test('does not recompute if dependencies unchanged (2 dependencies)', () => {
   // test("does recompute if dependencies changed", () => {
   const container = {};
   let invocationCount = 0;
@@ -47,7 +47,7 @@ test("does not recompute if dependencies unchanged (2 dependencies)", () => {
   expect(invocationCount).toBe(1);
 });
 
-test("does recompute if dependencies changed", () => {
+test('does recompute if dependencies changed', () => {
   const container = {};
   let invocationCount = 0;
   let a = 1;
@@ -68,7 +68,7 @@ test("does recompute if dependencies changed", () => {
   expect(invocationCount).toBe(2);
 });
 
-test("multiple invocations on one instance", () => {
+test('multiple invocations on one instance', () => {
   const container = {};
   let invocationCountASquared = 0;
   let invocationCountBSquared = 0;

@@ -1,7 +1,7 @@
-import "./style.css";
+import './style.css';
 
-import { main } from "./viz";
+import { main } from './viz';
 
-const container = document.getElementById("viz-container");
+const container = document.getElementById('viz-container');
 
 main(container);

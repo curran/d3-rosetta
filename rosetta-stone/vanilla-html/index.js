@@ -1,6 +1,6 @@
-import { main } from "./viz/index.js";
+import { main } from './viz/index.js';
 
-const container = document.getElementById("viz-container");
+const container = document.getElementById('viz-container');
 let state = {};
 
 const setState = (next) => {

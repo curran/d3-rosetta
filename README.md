@@ -46,11 +46,11 @@ Whenever `setState` is invoked, `main` is executed _again_ and passed the new de
 Implementing the state management infrastructure that invokes `main` can look like this in Vanilla JS:
 
 ```js
-import { main } from "./viz/index.js";
+import { main } from './viz/index.js';
 
 let state = {};
 
-const container = document.querySelector(".viz-container");
+const container = document.querySelector('.viz-container');
 
 const render = () => {
   main(container, {
@@ -74,7 +74,7 @@ This is the logic implemented in the [VizHub](https://vizhub.com/) runtime envir
 Implementing the state management infrastructure that invokes `main` can look like this in React:
 
 ```js
-import { main } from "./viz/index.js";
+import { main } from './viz/index.js';
 export const App = () => {
   const [state, setState] = useState({});
   const ref = useRef(null);
@@ -130,8 +130,8 @@ In Vue, we can use the `ref` and `watchEffect` functions from Vue's Composition 
 </template>
 
 <script>
-import { ref, watchEffect, onMounted } from "vue";
-import { main } from "./viz/index.js";
+import { ref, watchEffect, onMounted } from 'vue';
+import { main } from './viz/index.js';
 
 export default {
   setup() {
@@ -168,16 +168,22 @@ In both Svelte and Vue examples, we bind the container DOM element to a variable
 In Angular, we can use Angular's lifecycle hooks and `@ViewChild` decorator to implement the state management infrastructure that invokes `main`. Here's an example:
 
 ```typescript
-import { Component, ElementRef, AfterViewInit, ViewChild } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { main } from "./viz/index.js";
+import {
+  Component,
+  ElementRef,
+  AfterViewInit,
+  ViewChild,
+} from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { main } from './viz/index.js';
 
 @Component({
-  selector: "app-root",
+  selector: 'app-root',
   template: `<div #container class="viz-container"></div>`,
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild("container", { static: true }) container!: ElementRef;
+  @ViewChild('container', { static: true })
+  container!: ElementRef;
   private stateSubject = new BehaviorSubject<any>({});
   state$ = this.stateSubject.asObservable();
 
@@ -209,9 +215,9 @@ The pattern of unidirectional data flow includes a single monolithic function th
 In React, memoization can be achieved with the `useMemo` hook. The `d3-rosetta` library introduces a similar construct for memoization based on the idea of storing memoized values on the DOM. This approach makes the utility compatible with hot reloading, wherein new code is injected at runtime. If the memoized values were stored in a JavaScript closure, they would be lost on each hot reload. Here's how this memoization utility can be used:
 
 ```js
-import { memoize } from "d3-rosetta";
-import { loadData } from "./loadData";
-import { processData } from "./processData";
+import { memoize } from 'd3-rosetta';
+import { loadData } from './loadData';
+import { processData } from './processData';
 
 export const main = (container, { state, setState }) => {
   const data = loadData({ state, setState });
@@ -219,7 +225,10 @@ export const main = (container, { state, setState }) => {
 
   const memo = memoize(container);
 
-  const processedData = memo(() => processData(data), [data]);
+  const processedData = memo(
+    () => processData(data),
+    [data],
+  );
 
   visualize(container, { processedData });
 };
@@ -231,7 +240,7 @@ In the unidirectional data flow pattern, data fetching is typically done in a se
 
 ```js
 const gistURL =
-  "https://gist.githubusercontent.com/curran/9729d3a8ef2a874eedf4fc22f349b2fa/raw/79ce147f4bd1914719bedbe156347ad572ec8e3f/react.json";
+  'https://gist.githubusercontent.com/curran/9729d3a8ef2a874eedf4fc22f349b2fa/raw/79ce147f4bd1914719bedbe156347ad572ec8e3f/react.json';
 
 export const loadData = ({ state, setState }) => {
   if (state.data === undefined) {
@@ -282,12 +291,12 @@ For example, consider the following logic for managing an axis container:
 const xAxisG = selection
   .selectAll(`g.x-axis`)
   .data([null])
-  .join("g")
-  .attr("class", "x-axis");
+  .join('g')
+  .attr('class', 'x-axis');
 ```
 
 The above logic can be expressed more concisely as:
 
 ```js
-const xAxisG = one(selection, "g", "x-axis");
+const xAxisG = one(selection, 'g', 'x-axis');
 ```

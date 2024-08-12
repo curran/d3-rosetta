@@ -4,7 +4,8 @@
   "description": "The D3 Rosetta Stone for maximum framework interoperability",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "prettier": "prettier {*.*,**/*.*} --write"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "d3-selection": "^3.0.0",
     "jsdom": "^24.1.1",
+    "vite": "^5.4.0",
     "vitest": "^2.0.5"
   }
 }

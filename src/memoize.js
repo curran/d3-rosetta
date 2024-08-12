@@ -3,7 +3,11 @@ export const memoize = (container) => {
   return (fn, dependencies) => {
     const property = `__d3_rosetta_memoized-${invocationCount}`;
     invocationCount++;
-    const memoized = container[property];
+    const node =
+      typeof container.node === 'function'
+        ? container.node()
+        : container;
+    const memoized = node[property];
     const fnString = fn.toString();
 
     if (
@@ -25,7 +29,7 @@ export const memoize = (container) => {
     }
 
     const value = fn();
-    container[property] = {
+    node[property] = {
       dependencies,
       fnString,
       value,

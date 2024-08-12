@@ -1,6 +1,57 @@
 # d3-rosetta
 
-**WORK IN PROGRESS - NOT READY FOR USE**
+Utilities for authoring D3 rendering logic with maximum compatibility with frameworks.
+
+## Utilities
+
+### `one`
+
+<b>one</b>(<i>selection</i>, <i>name</i>[, <i>class</i>])
+
+A convenience utility for managing a single element of the given <i>name</i> within the given <i>selection</i>. Optionally a <i>class</i> can be specified to disambiguate between siblings of the same name.
+
+For example, consider the following logic for managing an axis container:
+
+```js
+const xAxisG = selection
+  .selectAll(`g.x-axis`)
+  .data([null])
+  .join('g')
+  .attr('class', 'x-axis');
+```
+
+The above logic can be expressed more concisely as:
+
+```js
+const xAxisG = one(selection, 'g', 'x-axis');
+```
+
+### `memoize`
+<b>memoize</b>(<i>selection</i>)
+
+Invoking `memoize` on a `selection` (a D3 selection or DOM element) creates a new instance of `memo`, a function that can memoize values.
+
+<b>memo</b>(<i>callback</i>,<i>dependencies</i>)
+
+A function that can memoize values by caching the results of `callback` function invocations based on the `dependencies` array. This API is similar to React's `useMemo` hook. It is particularly useful for optimizing expensive calculations in D3 rendering logic by avoiding unnecessary recalculations.
+
+```js
+import { memoize } from 'd3-rosetta';
+export const main = (container, { state, setState }) => {
+  // Assume a and b are numbers that can be updated by the user
+  const { a, b } = state;
+
+  const memo = memoize(container);
+
+  const computed = memo(() => {
+    // Imagine that this is a very expensive calculation
+    return a + b;
+  }, [a, b]);
+  console.log(computed); // 3
+};
+```
+
+**WORK IN PROGRESS BELOW - NOT READY FOR USE**
 
 #### The D3 Rosetta Stone for frameworks and plugins
 
@@ -279,24 +330,4 @@ export const measure = ({ state, setState, container }) => {
   }
   return { width, height };
 };
-```
-
-### One
-
-<a name="one" href="#one">#</a> d3.<b>one</b>(<i>selection</i>, <i>name</i>[, <i>class</i>])
-A convenience utility for managing a single element of the given <i>name</i> within the given <i>selection</i>. Optionally a <i>class</i> can be specified to disambiguate between siblings of the same name.
-For example, consider the following logic for managing an axis container:
-
-```js
-const xAxisG = selection
-  .selectAll(`g.x-axis`)
-  .data([null])
-  .join('g')
-  .attr('class', 'x-axis');
-```
-
-The above logic can be expressed more concisely as:
-
-```js
-const xAxisG = one(selection, 'g', 'x-axis');
 ```

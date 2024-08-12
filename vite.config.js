@@ -5,8 +5,9 @@ export default defineConfig({
     lib: {
       entry: 'src/index.js',
       name: 'd3Rosetta',
-      fileName: (format) => `d3-rosetta.${format}.js`,
-      formats: ['umd'],
+      fileName: (format) =>
+        `d3-rosetta.${format === 'es' ? 'esm' : 'umd'}.js`,
+      formats: ['es', 'umd'],
     },
     rollupOptions: {
       external: ['d3-selection'],

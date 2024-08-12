@@ -121,3 +121,25 @@ test('multiple invocations on one instance', () => {
   expect(invocationCountASquared).toBe(3);
   expect(invocationCountBSquared).toBe(3);
 });
+
+test('accepts a D3 selection', () => {
+  const domNode = {};
+  let invocationCount = 0;
+  let a = 1;
+  let b = 2;
+  const main = () => {
+    const selection = { node: () => domNode };
+    const memo = memoize(selection);
+    const computed = memo(() => {
+      invocationCount++;
+      return a + b;
+    }, [a, b]);
+    expect(computed).toBe(a + b);
+  };
+
+  main();
+  expect(invocationCount).toBe(1);
+  a = 2;
+  main();
+  expect(invocationCount).toBe(2);
+});

@@ -4,12 +4,12 @@
 
 #### The D3 Rosetta Stone for frameworks and plugins
 
-Write your interactive dataviz logic *once* using vanilla JavaScript and D3. Wrap it as a component in any framework.
+Write your interactive dataviz logic _once_ using vanilla JavaScript and D3. Wrap it as a component in any framework.
 
 This project `d3-rosetta` is two things:
 
- * A library of utilities for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow
- * A rosetta stone of example implementations of the unidirectional data flow pattern across frameworks
+- A library of utilities for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow
+- A rosetta stone of example implementations of the unidirectional data flow pattern across frameworks
 
 ## The Problem: Re-use D3 rendering logic across frameworks
 
@@ -270,4 +270,24 @@ export const measure = ({ state, setState, container }) => {
   }
   return { width, height };
 };
+```
+
+### One
+
+<a name="one" href="#one">#</a> d3.<b>one</b>(<i>selection</i>, <i>name</i>[, <i>class</i>])
+A convenience utility for managing a single element of the given <i>name</i> within the given <i>selection</i>. Optionally a <i>class</i> can be specified to disambiguate between siblings of the same name.
+For example, consider the following logic for managing an axis container:
+
+```js
+const xAxisG = selection
+  .selectAll(`g.x-axis`)
+  .data([null])
+  .join("g")
+  .attr("class", "x-axis");
+```
+
+The above logic can be expressed more concisely as:
+
+```js
+const xAxisG = one(selection, "g", "x-axis");
 ```

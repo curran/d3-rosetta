@@ -29,6 +29,7 @@ const xAxisG = one(selection, 'g', 'x-axis');
 ```
 
 ### `memoize`
+
 <b>memoize</b>(<i>selection</i>)
 
 Invoking `memoize` on a `selection` (a D3 selection or DOM element) creates a new instance of `memo`, a function that can memoize values.

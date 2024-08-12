@@ -28,6 +28,8 @@
   },
   "homepage": "https://github.com/curran/d3-rosetta#readme",
   "devDependencies": {
-    "vitest": "^2.0.3"
+    "d3-selection": "^3.0.0",
+    "jsdom": "^24.1.1",
+    "vitest": "^2.0.5"
   }
 }

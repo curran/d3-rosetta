@@ -107,13 +107,13 @@ In this example, `Memoize` is used to create a `memoize` function associated wit
 
 **`StateProperty({ state, setState })`**
 
-The `StateProperty` function is factory function that creates a utility that simplifies the management of individual properties within a state object. It returns a function that allows easy access to a specific state property's value and provides a setter function to update that property. This is particularly useful in complex applications where state is passed down through various components or functions.
+The `StateProperty` function is factory function that creates a utility that simplifies the management of individual properties within a state object. It returns a function that allows easy access to a specific state property's value and provides a setter function to update that property.
 
 ```js
 const stateProperty = StateProperty({ state, setState });
 ```
 
-**`stateProperty(fieldName[,defaultValue])`**
+**`stateProperty(fieldName)`**
 
 The `stateProperty` function, created by the `StateProperty` factory function, binds to a specific property in the state. It returns an array with two elements: the current value of the field and a setter function to update that field. This pattern enables you to manage stateful values in a concise and intuitive way, ensuring that your D3 visualizations remain responsive to changes in state. This pattern is similar to React's `useState` hook.
 

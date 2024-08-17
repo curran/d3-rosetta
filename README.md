@@ -1,12 +1,65 @@
 # d3-rosetta
 
-Utilities for authoring D3 rendering logic with maximum compatibility with frameworks.
+## The D3 Rosetta Stone for Frameworks and Plugins
 
-Example usage: [zoomable-county-choropleth](https://vizhub.com/curran/zoomable-county-choropleth)
+**Write your interactive data visualization logic once using vanilla JavaScript and D3, and wrap it as a component in any framework.**
+
+`d3-rosetta` serves two main purposes:
+
+- **A utility library** for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow.
+- **A rosetta stone** of example implementations of the unidirectional data flow pattern across various frameworks.
+
+### The Problem: Re-using D3 Rendering Logic Across Frameworks
+
+While frameworks like React, Svelte, Vue, and Angular offer state management and DOM manipulation solutions, D3 excels in data transformation and visualization, particularly with axes, transitions, and behaviors (e.g. zoom, drag, and brush). These D3 features require direct access to the DOM, making it challenging to replicate them effectively within frameworks.
+
+### The Solution: Unidirectional Data Flow
+
+Unidirectional data flow is a pattern that can be cleanly invoked from multiple frameworks. In this paradigm, a single function is responsible for updating the DOM or rendering visuals based on a single, central state. As the state updates, the function re-renders the visualization in an idempotent manner, meaning it can run multiple times without causing side effects. Here's what the entry point function looks like for a D3-based visualization that uses unidirectional data flow:
+
+```js
+export const main = (container, { state, setState }) => {
+  // Your reusable D3-based rendering logic goes here
+};
+```
+
+- **`container`**: A DOM element where the visualization will be rendered
+- **`state`**: An object representing the current state of the application, initially empty
+- **`setState`**: A function that updates the state using immutable update patterns
+
+Whenever `setState` is invoked, `main` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive.
+
+### Example Usage in Vanilla JS
+
+Here’s how you can implement the state management infrastructure in vanilla JavaScript:
+
+```js
+import { main } from './viz/index.js';
+
+let state = {};
+const container = document.querySelector('.viz-container');
+
+const render = () => {
+  main(container, { state, setState });
+};
+
+const setState = (next) => {
+  state = next(state);
+  render();
+};
+
+render();
+```
+
+This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be adapted to different frameworks as needed. For examples of invoking `main` from various frameworks such as React, Vue, and Svelte, see the `/rosetta-stone` directory.
 
 ## Utilities
 
-Here’s the reworked documentation for the `one` utility, following the same style as the previous sections:
+`d3-rosetta` provides several utilities designed to enhance the unidirectional data flow pattern by optimizing performance and simplifying common tasks in D3-based visualizations.
+
+- [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection
+- [`Memoize`](#Memoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered
+- [`StateProperty`](#StateProperty) - Simplifies the management of individual properties within a state object
 
 ---
 

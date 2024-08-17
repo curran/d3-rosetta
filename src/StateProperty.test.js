@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { stateField } from './stateField.js';
+import { StateProperty } from './StateProperty.js';
 
 test('stateField returns the correct state value and setter function', () => {
   let state = {};
@@ -10,8 +10,11 @@ test('stateField returns the correct state value and setter function', () => {
 
   const current = {};
   const main = () => {
-    const field = stateField({ state, setState });
-    const [name, setName] = field('name', 'Alice');
+    const stateProperty = StateProperty({
+      state,
+      setState,
+    });
+    const [name, setName] = stateProperty('name', 'Alice');
     current.name = name;
     current.setName = setName;
   };

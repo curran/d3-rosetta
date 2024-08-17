@@ -1,4 +1,4 @@
-export const stateField =
+export const StateProperty =
   ({ state, setState }) =>
   (field, defaultValue) => [
     state[field] === undefined

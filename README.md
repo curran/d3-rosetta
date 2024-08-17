@@ -54,6 +54,49 @@ export const main = (container, { state, setState }) => {
 };
 ```
 
+### `stateField`
+
+<b>stateField</b>(<i>{state,setState}</i>)
+
+A utility function that creates a binding between a state object and a specific field within that state. This allows for easy access to the field's value and provides a setter function to update the state. It simplifies the management of stateful values, particularly in situations where state is passed down to various components or functions.
+
+```js
+import { stateField } from 'd3-rosetta';
+
+export const main = (container, { state, setState }) => {
+  const field = stateField({ state, setState });
+
+  // Access and update the 'usAtlasData' field in the state
+  const [usAtlasData, setUSAtlasData] =
+    field('usAtlasData');
+
+  // Fetch and set US Atlas data
+  getUSAtlasData({ usAtlasData, setUSAtlasData });
+  if (!usAtlasData) return;
+
+  // Access and update the 'hoveredState' field in the state
+  const [hoveredState, setHoveredState] =
+    field('hoveredState');
+
+  // Render the map using data and hovered state
+  const svg = select(container)
+    .selectAll('svg')
+    .data([null])
+    .join('svg')
+    .attr('width', container.clientWidth)
+    .attr('height', container.clientHeight)
+    .call(map, {
+      usAtlasData,
+      hoveredState,
+      setHoveredState,
+    });
+};
+```
+
+The `stateField` utility streamlines working with state fields, particularly in environments where state management can become complex. It provides an intuitive API for both accessing and updating fields within your state. It is similar in spirit to React's `useState` hook, but is designed to work with D3 rendering logic.
+
+Note that if a default value is provided, invoking the setter and passing the value `undefined` will cause the default value to be returned as the current value of the field. If you need to use an initial value and also have the possibility of "no value", consider using `null` as a sentinel value to represent "no value".
+
 **WORK IN PROGRESS BELOW - NOT READY FOR USE**
 
 #### The D3 Rosetta Stone for frameworks and plugins

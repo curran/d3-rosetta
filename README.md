@@ -9,6 +9,10 @@
 - **A utility library** for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow
 - **A rosetta stone** of example implementations of the unidirectional data flow pattern across various frameworks
 
+https://github.com/user-attachments/assets/c23aa1c2-f86b-4f7e-9ff4-979987cd090f
+
+Example usage: [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js)
+
 ### The Problem: Re-using D3 Rendering Logic Across Frameworks
 
 While frameworks like React, Svelte, Vue, and Angular offer state management and DOM manipulation solutions, D3 excels in data transformation and visualization, particularly with axes, transitions, and behaviors (e.g. zoom, drag, and brush). These D3 features require direct access to the DOM, making it challenging to replicate them effectively within frameworks.

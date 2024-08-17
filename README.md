@@ -33,47 +33,6 @@ export const main = (container, { state, setState }) => {
 
 Whenever `setState` is invoked, `main` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive. This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be invoked from different frameworks as needed.
 
-### Example Usage in Vanilla JS
-
-Here's how you can implement the state management infrastructure for unidirectional data flow in vanilla JavaScript:
-
-```js
-import { main } from './viz/index.js';
-let state = {};
-const container = document.querySelector('.viz-container');
-
-const render = () => {
-  main(container, { state, setState });
-};
-
-const setState = (next) => {
-  state = next(state);
-  render();
-};
-
-render();
-```
-
-Here's an example of how it can be used in a React component:
-
-```jsx
-import { useEffect, useRef, useState } from 'react';
-import { main } from './viz';
-export const App = () => {
-  const ref = useRef(null);
-  const [state, setState] = useState({});
-
-  useEffect(() => {
-    const container = ref.current;
-    main(container, { state, setState });
-  }, [state]);
-
-  return <div className="viz-container" ref={ref}></div>;
-};
-```
-
-For a additional examples of invoking `main` from various frameworks such as React, Vue, and Svelte, see the `/rosetta-stone` directory.
-
 ## Utilities
 
 `d3-rosetta` provides several utilities designed to enhance the unidirectional data flow pattern by optimizing performance and simplifying common tasks in D3-based visualizations.
@@ -185,3 +144,47 @@ export const main = (container, { state, setState }) => {
   // ... D3 rendering logic using a, setA, b, and setB
 };
 ```
+
+
+## Rosetta Stone
+
+### Example Usage in Vanilla JS
+
+Here's how you can implement the state management infrastructure for unidirectional data flow in vanilla JavaScript:
+
+```js
+import { main } from './viz/index.js';
+let state = {};
+const container = document.querySelector('.viz-container');
+
+const render = () => {
+  main(container, { state, setState });
+};
+
+const setState = (next) => {
+  state = next(state);
+  render();
+};
+
+render();
+```
+
+Here's an example of how it can be used in a React component:
+
+```jsx
+import { useEffect, useRef, useState } from 'react';
+import { main } from './viz';
+export const App = () => {
+  const ref = useRef(null);
+  const [state, setState] = useState({});
+
+  useEffect(() => {
+    const container = ref.current;
+    main(container, { state, setState });
+  }, [state]);
+
+  return <div className="viz-container" ref={ref}></div>;
+};
+```
+
+For a additional examples of invoking `main` from various frameworks such as React, Vue, and Svelte, see the `/rosetta-stone` directory.

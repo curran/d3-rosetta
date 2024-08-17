@@ -11,7 +11,7 @@
 
 https://github.com/user-attachments/assets/c23aa1c2-f86b-4f7e-9ff4-979987cd090f
 
-Example usage: [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js)
+Fully working example: [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js) - leverages utilities `one`, `stateProperty`, and `memoize` which makes the interaction so snappy!
 
 ### The Problem: Re-using D3 Rendering Logic Across Frameworks
 

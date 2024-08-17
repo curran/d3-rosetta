@@ -1,3 +1,3 @@
 export { one } from './one.js';
-export { memoize } from './memoize.js';
-export { stateField } from './stateField.js';
+export { Memoize } from './Memoize.js';
+export { StateProperty } from './StateProperty.js';

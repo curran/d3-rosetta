@@ -14,12 +14,15 @@ test('stateField returns the correct state value and setter function', () => {
       state,
       setState,
     });
-    const [name, setName] = stateProperty('name', 'Alice');
+    const [name, setName] = stateProperty('name');
     current.name = name;
     current.setName = setName;
   };
 
   main();
+  expect(current.name).toBe(undefined);
+
+  current.setName('Alice');
   expect(current.name).toBe('Alice');
 
   current.setName('Bob');

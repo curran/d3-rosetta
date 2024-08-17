@@ -7,7 +7,7 @@
 `d3-rosetta` serves two main purposes:
 
 - **A utility library** for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow
-- **A rosetta stone** of example implementations of the unidirectional data flow pattern across various frameworks
+- **A rosetta stone** of example implementations of the unidirectional data flow pattern across various frameworks (work in progress - contributions welcome!)
 
 https://github.com/user-attachments/assets/c23aa1c2-f86b-4f7e-9ff4-979987cd090f
 

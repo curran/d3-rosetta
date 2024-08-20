@@ -115,7 +115,7 @@ const stateProperty = StateProperty({ state, setState });
 
 **`stateProperty(fieldName)`**
 
-The `stateProperty` function, created by the `StateProperty` factory function, binds to a specific property in the state. It returns an array with two elements: the current value of the field and a setter function to update that field. This pattern enables you to manage stateful values in a concise and intuitive way, ensuring that your D3 visualizations remain responsive to changes in state. This pattern is similar to React's `useState` hook.
+The `stateProperty` function, created by the `StateProperty` factory function, binds to a specific property in the state. It returns an array with two elements: the current value of the field and a setter function to update that field. The setter function can accept either a new value or a function that receives the previous value and returns the new value. This pattern enables you to manage stateful values in a concise and intuitive way, ensuring that your D3 visualizations remain responsive to changes in state. This pattern is similar to React's `useState` hook.
 
 Example without using `StateProperty`:
 
@@ -142,9 +142,10 @@ export const main = (container, { state, setState }) => {
   const [b, setB] = stateProperty('b');
 
   // ... D3 rendering logic using a, setA, b, and setB
+  // Supports setting by value or function
+  // e.g. setA(a + 1) or setA((prev) => prev + 1)
 };
 ```
-
 
 ## Rosetta Stone
 

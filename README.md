@@ -11,7 +11,7 @@
 
 https://github.com/user-attachments/assets/c23aa1c2-f86b-4f7e-9ff4-979987cd090f
 
-Fully working example: [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js) - leverages utilities `one`, `stateProperty`, and `memoize` which makes the interaction so snappy!
+Fully working example: [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js) - leverages utilities `one`, `stateField`, and `memoize` which makes the interaction so snappy!
 
 ### The Problem: Re-using D3 Rendering Logic Across Frameworks
 
@@ -39,7 +39,7 @@ Whenever `setState` is invoked, `main` re-executes with the new state, ensuring 
 
 - [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection
 - [`Memoize`](#Memoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered
-- [`StateProperty`](#StateProperty) - Simplifies the management of individual properties within a state object
+- [`StateField`](#StateField) - Simplifies the management of individual properties within a state object
 
 ---
 
@@ -103,21 +103,21 @@ In this example, `Memoize` is used to create a `memoize` function associated wit
 
 ---
 
-### `StateProperty`
+### `StateField`
 
-**`StateProperty({ state, setState })`**
+**`StateField({ state, setState })`**
 
-The `StateProperty` function is factory function that creates a utility that simplifies the management of individual properties within a state object. It returns a function that allows easy access to a specific state property's value and provides a setter function to update that property.
+The `StateField` function is factory function that creates a utility that simplifies the management of individual properties within a state object. It returns a function that allows easy access to a specific state property's value and provides a setter function to update that property.
 
 ```js
-const stateProperty = StateProperty({ state, setState });
+const stateField = StateField({ state, setState });
 ```
 
-**`stateProperty(fieldName)`**
+**`stateField(fieldName)`**
 
-The `stateProperty` function, created by the `StateProperty` factory function, binds to a specific property in the state. It returns an array with two elements: the current value of the field and a setter function to update that field. The setter function can accept either a new value or a function that receives the previous value and returns the new value. This pattern enables you to manage stateful values in a concise and intuitive way, ensuring that your D3 visualizations remain responsive to changes in state. This pattern is similar to React's `useState` hook.
+The `stateField` function, created by the `StateField` factory function, binds to a specific field in the state object. It accepts `fieldName`, the name of the field on the state object. It returns an array with two elements: the current value and a setter function. The setter function can accept either a new value or a function that receives the previous value and returns the new value. This pattern enables you to manage stateful values in a concise and intuitive way, ensuring that your D3 visualizations remain responsive to changes in state. This pattern is similar in spirit to React's `useState` hooks.
 
-Example without using `StateProperty`:
+Example without using `StateField`:
 
 ```js
 export const main = (container, { state, setState }) => {
@@ -131,15 +131,15 @@ export const main = (container, { state, setState }) => {
 };
 ```
 
-Example using `StateProperty`:
+Example using `StateField`:
 
 ```js
-import { StateProperty } from 'd3-rosetta';
+import { StateField } from 'd3-rosetta';
 
 export const main = (container, { state, setState }) => {
-  const stateProperty = StateProperty({ state, setState });
-  const [a, setA] = stateProperty('a');
-  const [b, setB] = stateProperty('b');
+  const stateField = StateField({ state, setState });
+  const [a, setA] = stateField('a');
+  const [b, setB] = stateField('b');
 
   // ... D3 rendering logic using a, setA, b, and setB
   // Supports setting by value or function

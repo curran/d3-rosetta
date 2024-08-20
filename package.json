@@ -1,6 +1,6 @@
 {
   "name": "d3-rosetta",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The D3 Rosetta Stone for maximum framework interoperability",
   "type": "module",
   "main": "dist/d3-rosetta.umd.js",

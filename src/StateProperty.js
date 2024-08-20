@@ -5,6 +5,9 @@ export const StateProperty =
     (value) =>
       setState((state) => ({
         ...state,
-        [propertyName]: value,
+        [propertyName]:
+          typeof value === 'function'
+            ? value(state[propertyName])
+            : value,
       })),
   ];

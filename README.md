@@ -11,7 +11,9 @@
 
 https://github.com/user-attachments/assets/c23aa1c2-f86b-4f7e-9ff4-979987cd090f
 
-Fully working example: [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js) - leverages utilities `one`, `stateField`, and `memoize` which makes the interaction so snappy!
+Fully working examples:
+ - [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js) - leverages utilities `one`, `stateField`, and `memoize` which makes the interaction so snappy!
+ - [Multidimensional Filtering](https://vizhub.com/curran/multidimensional-filtering) - brushing on multiple histograms with filtering - a solution to a classic complex problem with interactive visualization
 
 ### The Problem: Re-using D3 Rendering Logic Across Frameworks
 

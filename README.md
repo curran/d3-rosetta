@@ -1,183 +1,48 @@
 # d3-rosetta
 
-## The D3 Rosetta Stone for Frameworks and Plugins
+A framework-agnostic utility for bringing D3’s powerful data visualization capabilities into your favorite front-end frameworks. Write your visualization logic once, and use it anywhere.
 
-**Write your interactive data visualization logic once using vanilla JavaScript and D3, and wrap it as a component in any framework.**
+```bash
+npm i d3-rosetta
+```
 
-`d3-rosetta` serves two main purposes:
+## Why d3-rosetta?
 
-- **A utility library** for simplifying [D3](https://d3js.org/) rendering logic with unidirectional data flow
-- **A rosetta stone** of example implementations of the unidirectional data flow pattern across various frameworks (work in progress - contributions welcome!)
+- **Framework-Agnostic**: Use the same visualization logic across React, Vue, Svelte, Angular, and more.
+- **Unidirectional Data Flow**: Simplify state management and rendering logic with a clean, idempotent approach.
+- **Optimized for Performance**: Includes utilities like memoization to ensure your visualizations stay fast and responsive.
+- **Minimal Boilerplate**: Get started quickly without the need for extensive setup or configuration.
 
-https://github.com/user-attachments/assets/c23aa1c2-f86b-4f7e-9ff4-979987cd090f
+## Quick Start
 
-Fully working examples:
- - [US States with Hover](https://vizhub.com/curran/us-states-with-hover?edit=files&file=index.js) - leverages utilities `one`, `stateField`, and `memoize` which makes the interaction so snappy!
- - [Multidimensional Filtering](https://vizhub.com/curran/multidimensional-filtering) - brushing on multiple histograms with filtering - a solution to a classic complex problem with interactive visualization
+### 1. Create Your Visualization
 
-### The Problem: Re-using D3 Rendering Logic Across Frameworks
-
-While frameworks like React, Svelte, Vue, and Angular offer state management and DOM manipulation solutions, D3 excels in data transformation and visualization, particularly with axes, transitions, and behaviors (e.g. zoom, drag, and brush). These D3 features require direct access to the DOM, making it challenging to replicate them effectively within frameworks.
-
-### The Solution: Unidirectional Data Flow
-
-Unidirectional data flow is a pattern that can be cleanly invoked from multiple frameworks. In this paradigm, a single function is responsible for updating the DOM or rendering visuals based on a single, central state. As the state updates, the function re-renders the visualization in an idempotent manner, meaning it can run multiple times without causing side effects. Here's what the entry point function looks like for a D3-based visualization that uses unidirectional data flow:
+Your visualization logic is a single function that takes a container and a state object. Here’s an example:
 
 ```js
 export const main = (container, { state, setState }) => {
-  // Your reusable D3-based rendering logic goes here
+  // Your reusable D3-based rendering logic goes here!
 };
 ```
 
-- **`container`**: A DOM element where the visualization will be rendered
-- **`state`**: An object representing the current state of the application, initially empty
-- **`setState`**: A function that updates the state using immutable update patterns
-
-Whenever `setState` is invoked, `main` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive. This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be invoked from different frameworks as needed.
-
-## Utilities
-
-`d3-rosetta` provides several utilities designed to enhance the unidirectional data flow pattern by optimizing performance and simplifying common tasks in D3-based visualizations.
-
-- [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection
-- [`Memoize`](#Memoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered
-- [`StateField`](#StateField) - Simplifies the management of individual properties within a state object
-
----
-
-### `one`
-
-**`one(selection, tagName[, className])`**
-
-The `one` function is a convenience utility designed to simplify the management of single DOM elements within a D3 selection. It ensures that only one element of the specified `tagName` exists within the given `selection`. Ooptionally, it can also apply a `className` to disambiguate between siblings of the same tag.
-
-#### Example:
-
-Consider the following traditional D3 logic for managing an axis container:
+To instantiate this with vanilla JavaScript and the dead simple state management solution provided by `d3-rosetta`, it can be invoked like this:
 
 ```js
-const xAxisG = selection
-  .selectAll('g.x-axis')
-  .data([null])
-  .join('g')
-  .attr('class', 'x-axis');
+import { createRoot } from 'd3-rosetta'
+import { main } from './viz';
+const container = document.getElementById('viz-container');
+createRoot(container).render(main)
 ```
 
-This can be expressed more concisely using `one`:
+### 2. Integrate with Your Framework
 
-```js
-const xAxisG = one(selection, 'g', 'x-axis');
-```
-
-In this example, `one` simplifies the creation and management of a single `g` element with the class `x-axis` within the `selection`. This utility reduces boilerplate code and enhances the clarity of your D3 logic, particularly when dealing with elements that should only have a single instance within a selection.
-
----
-
-### `Memoize`
-
-**`Memoize(container)`**
-
-The `Memoize` function is a factory function that creates a specialized memoization utility that stores memoized values on the provided `container` (which is either a DOM element or a D3 selection). This utility is designed to optimize expensive calculations within D3 rendering logic by caching the results of those calculations and reusing them when the same inputs are encountered again. This approach minimizes unnecessary recalculations, enhancing the performance of your D3 visualizations.
-
-```js
-const memoize = Memoize(container);
-```
-
-**`memoize(callback, dependencies)`**
-
-The `memoize` function, created by the `Memoize` factory function, accepts a `callback` function and an array of `dependencies`. It invokes the `callback` only when one or more of the `dependencies` have changed since the last invocation. If the `dependencies` remain the same, the previously cached result is returned, avoiding the need for repeated computation. This pattern is similar to React's `useMemo` hook and is particularly useful in D3 when dealing with computationally intensive tasks.
-
-```js
-import { Memoize } from 'd3-rosetta';
-
-export const main = (container, { state, setState }) => {
-  const { a, b } = state;
-  const memoize = Memoize(container);
-  const computed = memoize(() => {
-    // Imagine that this is a very expensive calculation
-    return a + b;
-  }, [a, b]);
-  console.log(computed); // Outputs the sum of a and b
-};
-```
-
-In this example, `Memoize` is used to create a `memoize` function associated with the `container`. This `memoize` function optimizes the sum calculation by caching the result and only recalculating it when `a` or `b` changes.
-
----
-
-### `StateField`
-
-**`StateField({ state, setState })`**
-
-The `StateField` function is factory function that creates a utility that simplifies the management of individual properties within a state object. It returns a function that allows easy access to a specific state property's value and provides a setter function to update that property.
-
-```js
-const stateField = StateField({ state, setState });
-```
-
-**`stateField(fieldName)`**
-
-The `stateField` function, created by the `StateField` factory function, binds to a specific field in the state object. It accepts `fieldName`, the name of the field on the state object. It returns an array with two elements: the current value and a setter function. The setter function can accept either a new value or a function that receives the previous value and returns the new value. This pattern enables you to manage stateful values in a concise and intuitive way, ensuring that your D3 visualizations remain responsive to changes in state. This pattern is similar in spirit to React's `useState` hooks.
-
-Example without using `StateField`:
-
-```js
-export const main = (container, { state, setState }) => {
-  const a = state.a;
-  const setA = (value) => setState({ ...state, a: value });
-
-  const b = state.b;
-  const setB = (value) => setState({ ...state, b: value });
-
-  // ... D3 rendering logic using a, setA, b, and setB
-};
-```
-
-Example using `StateField`:
-
-```js
-import { StateField } from 'd3-rosetta';
-
-export const main = (container, { state, setState }) => {
-  const stateField = StateField({ state, setState });
-  const [a, setA] = stateField('a');
-  const [b, setB] = stateField('b');
-
-  // ... D3 rendering logic using a, setA, b, and setB
-  // Supports setting by value or function
-  // e.g. setA(a + 1) or setA((prev) => prev + 1)
-};
-```
-
-## Rosetta Stone
-
-### Example Usage in Vanilla JS
-
-Here's how you can implement the state management infrastructure for unidirectional data flow in vanilla JavaScript:
-
-```js
-import { main } from './viz/index.js';
-let state = {};
-const container = document.querySelector('.viz-container');
-
-const render = () => {
-  main(container, { state, setState });
-};
-
-const setState = (next) => {
-  state = next(state);
-  render();
-};
-
-render();
-```
-
-Here's an example of how it can be used in a React component:
+Here’s how you can integrate it with React:
 
 ```jsx
 import { useEffect, useRef, useState } from 'react';
 import { main } from './viz';
-export const App = () => {
+
+export function App() {
   const ref = useRef(null);
   const [state, setState] = useState({});
 
@@ -186,12 +51,84 @@ export const App = () => {
     main(container, { state, setState });
   }, [state]);
 
-  return <div className="viz-container" ref={ref}></div>;
+  return <div ref={ref}></div>;
+}
+```
+
+For other framework examples see the `/rosetta-stone` directory.
+
+### 3. Enjoy Reusable, Framework-Independent Visualizations!
+
+Visualizations implemented with `d3-rosetta` patterns are flexible in that they can be invoked cleanly from components in various frameworks. This makes it a perfect choice for client services agencies who want to streamline their D3 data visualization development, and simultaneously deliver codebases that clients will love. A client uses Vue but your team doesn't? No problem! Need to deliver a `create-react-app` project for compliance purposes? No problem! Just write your visualization logic using these patterns, and your data visualization practice can flourish.
+
+## Core Concepts
+
+### Unidirectional Data Flow
+
+The key to `d3-rosetta`'s flexibility is its adherence to unidirectional data flow. Your visualization function is called every time the state changes, ensuring a consistent and predictable rendering process.
+
+```js
+export const main = (container, { state, setState }) => {
+  // Your reusable D3-based rendering logic goes here!
+  // Calling `setState` triggers a re-execution of `main` with the fresh `state`!
 };
 ```
 
-For a additional examples of invoking `main` from various frameworks such as React, Vue, and Svelte, see the `/rosetta-stone` directory.
+### Utilities
+
+`d3-rosetta` includes several built-in utilities to make your life easier:
+
+- **`one`**: Simplifies managing single DOM elements within a D3 selection
+- **`Memoize`**: Caches expensive computations and reuses them when inputs remain unchanged
+- **`StateField`**: Makes it easy to manage individual properties within your state object
+
+### Why d3-rosetta over plain D3?
+
+- **Cross-Framework Compatibility**: Write once, use anywhere
+- **Simplified State Management**: Leverage consistent patterns to keep your visualizations dynamic and responsive
+- **Less Boilerplate**: Get started faster with less code
+- **High Performance**: Optimize when you need to for blazing fast interactions
+
+---
+
+## Recipes
+
+### Using `one` for Simplified DOM Management
+
+```js
+const xAxisG = one(selection, 'g', 'x-axis');
+```
+
+### Memoizing Expensive Computations
+
+```js
+const memoize = Memoize(container);
+const computed = memoize(() => a + b, [a, b]);
+```
+
+### Managing State Fields with `StateField`
+
+```js
+const stateField = StateField({ state, setState });
+const [a, setA] = stateField('a');
+```
+
+## Comparison with Other Solutions
+
+- **Plain D3**: Great for quick prototypes but can become cumbersome in complex apps
+- **Framework-Specific Solutions**: Often involve more boilerplate and less flexibility
+
+## Best Practices
+
+- **Modularize Your Code**: Keep your D3 logic modular to ensure it's reusable across different projects
+- **Use Memoization**: Avoid unnecessary recalculations by caching results when appropriate
+- **Centralize State Management**: Keep your state logic in one place to maintain clarity and consistency
+
+## Community & Support
+
+Join our [Discord community](https://discord.gg/your-discord-link) to get help, share your work, or contribute to the project!
 
 ## Similar Projects
 
- * [zustand](https://github.com/pmndrs/zustand)
+- [Zustand](https://github.com/pmndrs/zustand)
+- [D3](https://d3js.org/)

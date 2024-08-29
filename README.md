@@ -191,3 +191,7 @@ export const App = () => {
 ```
 
 For a additional examples of invoking `main` from various frameworks such as React, Vue, and Svelte, see the `/rosetta-stone` directory.
+
+## Similar Projects
+
+ * [zustand](https://github.com/pmndrs/zustand)

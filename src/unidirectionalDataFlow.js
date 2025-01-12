@@ -4,9 +4,11 @@ export const unidirectionalDataFlow = ({
   main,
 }) => {
   let state = {};
+  let cleanup;
 
   const render = () => {
-    main(container, { state, setState });
+    cleanup && cleanup();
+    cleanup = main(container, { state, setState });
   };
 
   const setState = (next) => {

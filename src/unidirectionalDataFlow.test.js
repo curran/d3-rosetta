@@ -15,6 +15,43 @@ test('initializes with empty state', () => {
   expect(renderedState).toEqual({});
 });
 
+test('calls cleanup function before re-rendering', () => {
+  let cleanupCalled = 0;
+  let renderCount = 0;
+  let setterFunction;
+  const container = {};
+
+  const app = unidirectionalDataFlow({
+    container,
+    main: (container, { state, setState }) => {
+      renderCount++;
+      setterFunction = setState;
+      return () => {
+        cleanupCalled++;
+      };
+    },
+  });
+
+  expect(renderCount).toBe(1);
+  expect(cleanupCalled).toBe(0);
+
+  // Test cleanup during setState
+  setterFunction((state) => ({ ...state, count: 1 }));
+  expect(cleanupCalled).toBe(1);
+  expect(renderCount).toBe(2);
+
+  // Test cleanup during hot reload
+  app.hotReload((container, { state, setState }) => {
+    renderCount++;
+    return () => {
+      cleanupCalled++;
+    };
+  });
+
+  expect(cleanupCalled).toBe(2);
+  expect(renderCount).toBe(3);
+});
+
 test('setState updates state and triggers render', () => {
   let renderedState;
   let setterFunction;

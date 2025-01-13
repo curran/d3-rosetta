@@ -22,6 +22,8 @@ While frameworks like React, Svelte, Vue, and Angular offer state management and
 
 ### The Solution: Unidirectional Data Flow
 
+See also [unidirectional-data-flow](https://github.com/curran/unidirectional-data-flow) - a library that implements this pattern.
+
 Unidirectional data flow is a pattern that can be cleanly invoked from multiple frameworks. In this paradigm, a single function is responsible for updating the DOM or rendering visuals based on a single, central state. As the state updates, the function re-renders the visualization in an idempotent manner, meaning it can run multiple times without causing side effects. Here's what the entry point function looks like for a D3-based visualization that uses unidirectional data flow:
 
 ```js
@@ -43,7 +45,6 @@ Whenever `setState` is invoked, `main` re-executes with the new state, ensuring 
 - [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection
 - [`createMemoizer`](#createMemoizer) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered
 - [`setter`](#setter) - Simplifies the management of individual properties within a state object
-- [`unidirectionalDataFlow`](#unidirectionalDataFlow) - Creates a self-contained unidirectional data flow system with hot reload support
 
 ---
 
@@ -133,34 +134,6 @@ const setName = (name) => {
 If you need to update multiple properties at once, you can use the `setState` function directly. However, for updating individual properties, `setter` offers a more concise and readable alternative.
 
 ---
-
-### `unidirectionalDataFlow`
-
-**`unidirectionalDataFlow({ container, main })`**
-
-The `unidirectionalDataFlow` function creates a self-contained unidirectional data flow system. It manages state updates and rendering, while also supporting hot reloading for development workflows.
-
-```js
-import { unidirectionalDataFlow } from 'd3-rosetta';
-
-const app = unidirectionalDataFlow({
-  container,
-  main: (container, { state, setState }) => {
-    // Your visualization logic here
-  },
-});
-```
-
-The function returns an object with a `hotReload` method that can be used to update the main rendering function while preserving state:
-
-```js
-// During development, when the main function changes:
-app.hotReload((container, { state, setState }) => {
-  // Updated visualization logic
-});
-```
-
-This utility eliminates the need to manually implement the state management infrastructure shown in the vanilla JS example below. It's particularly useful during development when you want to iterate on your visualization code while maintaining the current state.
 
 ## Rosetta Stone
 

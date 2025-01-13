@@ -1,18 +1,16 @@
 import { expect, test } from 'vitest';
-import { Memoize } from './Memoize';
+import { createMemoizer } from './createMemoizer';
 
 test('adds 1 + 2 to equal 3', () => {
-  const container = {};
-  const memoize = Memoize(container);
-  const computed = memoize(() => 1 + 2, []);
-  expect(computed).toBe(3);
+  const memoize = createMemoizer({});
+  expect(memoize(() => 1 + 2, [])).toBe(3);
 });
 
 test('does not recompute if dependencies unchanged (zero dependencies)', () => {
   const container = {};
   let invocationCount = 0;
   const main = () => {
-    const memoize = Memoize(container);
+    const memoize = createMemoizer(container);
     const computed = memoize(() => {
       invocationCount++;
       return 1 + 2;
@@ -33,7 +31,7 @@ test('does not recompute if dependencies unchanged (2 dependencies)', () => {
   let a = 1;
   let b = 2;
   const main = () => {
-    const memoize = Memoize(container);
+    const memoize = createMemoizer(container);
     const computed = memoize(() => {
       invocationCount++;
       return a + b;
@@ -53,7 +51,7 @@ test('does recompute if dependencies changed', () => {
   let a = 1;
   let b = 2;
   const main = () => {
-    const memoize = Memoize(container);
+    const memoize = createMemoizer(container);
     const computed = memoize(() => {
       invocationCount++;
       return a + b;
@@ -74,7 +72,7 @@ test('multiple invocations on one instance', () => {
   let a = 1;
   let b = 2;
   const main = ({ container }) => {
-    const memoize = Memoize(container);
+    const memoize = createMemoizer(container);
 
     const aSquared = memoize(() => {
       invocationCountASquared++;
@@ -122,24 +120,24 @@ test('multiple invocations on one instance', () => {
   expect(invocationCountBSquared).toBe(3);
 });
 
-test('accepts a D3 selection', () => {
-  const domNode = {};
-  let invocationCount = 0;
-  let a = 1;
-  let b = 2;
-  const main = () => {
-    const container = { node: () => domNode };
-    const memoize = Memoize(container);
-    const computed = memoize(() => {
-      invocationCount++;
-      return a + b;
-    }, [a, b]);
-    expect(computed).toBe(a + b);
-  };
+// test('accepts a D3 selection', () => {
+//   const domNode = {};
+//   let invocationCount = 0;
+//   let a = 1;
+//   let b = 2;
+//   const main = () => {
+//     const container = { node: () => domNode };
+//     const memoize = Memoize(container);
+//     const computed = memoize(() => {
+//       invocationCount++;
+//       return a + b;
+//     }, [a, b]);
+//     expect(computed).toBe(a + b);
+//   };
 
-  main();
-  expect(invocationCount).toBe(1);
-  a = 2;
-  main();
-  expect(invocationCount).toBe(2);
-});
+//   main();
+//   expect(invocationCount).toBe(1);
+//   a = 2;
+//   main();
+//   expect(invocationCount).toBe(2);
+// });

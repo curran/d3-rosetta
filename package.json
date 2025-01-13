@@ -3,8 +3,16 @@
   "version": "0.6.0",
   "description": "The D3 Rosetta Stone for maximum framework interoperability",
   "type": "module",
-  "main": "dist/d3-rosetta.umd.js",
-  "module": "dist/d3-rosetta.esm.js",
+  "main": "./dist/d3-rosetta.esm.js",
+  "module": "./dist/d3-rosetta.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/d3-rosetta.esm.js",
+      "require": "./dist/d3-rosetta.umd.js"
+    }
+  },
+  "jsdelivr": "./dist/d3-rosetta.esm.js",
+  "unpkg": "./dist/d3-rosetta.umd.js",
   "files": [
     "dist/"
   ],

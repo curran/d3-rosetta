@@ -46,6 +46,7 @@
   "devDependencies": {
     "d3-selection": "^3.0.0",
     "jsdom": "^24.1.1",
+    "prettier": "^3.5.3",
     "vite": "^5.4.1",
     "vitest": "^2.0.5"
   }

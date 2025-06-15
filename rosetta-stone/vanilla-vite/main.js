@@ -1,7 +1,7 @@
 import './style.css';
-
-import { main } from './viz';
+import { unidirectionalDataFlow } from '../../src/unidirectionalDataFlow.js';
+import { main } from './viz/index.js';
 
 const container = document.getElementById('viz-container');
 
-main(container);
+unidirectionalDataFlow(container, main);

@@ -1,4 +1,4 @@
-/* Global styles for Vue app */
+/* Global styles for Svelte app */
 body {
   margin: 0;
   overflow: hidden;
@@ -9,7 +9,7 @@ body {
 #app {
   height: 100vh;
   width: 100vw;
-  display: flex; /* Optional: for centering or layout */
+  display: flex; /* Optional: if you want App.svelte to fill #app */
   justify-content: center; /* Optional */
   align-items: center; /* Optional */
 }

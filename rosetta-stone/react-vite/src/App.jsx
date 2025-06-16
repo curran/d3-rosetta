@@ -6,8 +6,8 @@ function App() {
 
   useEffect(() => {
     const container = ref.current;
-    main(container, { state, setState });
-  }, [state]);
+    main(container, state, setState);
+  }, [state, setState]); // Added setState to dependency array as it's used in the effect
 
   return <div className="viz-container" ref={ref}></div>;
 }

@@ -43,10 +43,11 @@ export class AppComponent implements AfterViewInit {
       // Call the D3 main rendering function with the new state.
       // Ensure the container element is available.
       if (this.containerRef?.nativeElement) {
-        main(this.containerRef.nativeElement, {
-          state: this.state,
-          setState: this.setStateWrapper,
-        });
+        main(
+          this.containerRef.nativeElement,
+          this.state,
+          this.setStateWrapper,
+        );
       }
     });
     // After the state is updated and D3 has re-rendered (potentially),
@@ -68,10 +69,7 @@ export class AppComponent implements AfterViewInit {
     // Initial call to render the D3 visualization.
     // Run this initial rendering outside the Angular zone as well.
     this.ngZone.runOutsideAngular(() => {
-      main(container, {
-        state: this.state,
-        setState: this.setStateWrapper,
-      });
+      main(container, this.state, this.setStateWrapper);
     });
     // Trigger change detection after the initial render.
     this.cdr.detectChanges();

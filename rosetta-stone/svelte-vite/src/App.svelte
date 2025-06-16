@@ -14,14 +14,14 @@
   // This is a reactive statement. It re-runs whenever `svelteState` or `containerElement` changes.
   // It ensures the D3 visualization is updated when the state changes.
   $: if (containerElement && typeof main === 'function') {
-    main(containerElement, { state: svelteState, setState: setStateWrapper });
+    main(containerElement, svelteState, setStateWrapper);
   }
 
   onMount(() => {
     // Initial call to render the D3 visualization when the component mounts
     // and the container div is available.
     if (containerElement) {
-      main(containerElement, { state: svelteState, setState: setStateWrapper });
+      main(containerElement, svelteState, setStateWrapper);
     }
   });
 </script>

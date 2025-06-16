@@ -34,10 +34,7 @@ onMounted(() => {
   // Initial call to render the D3 visualization when the component mounts
   // and the container div (containerRef.value) is available.
   if (containerRef.value) {
-    main(containerRef.value, {
-      state: vueState,
-      setState: setStateWrapper,
-    });
+    main(containerRef.value, vueState, setStateWrapper);
   }
 });
 
@@ -47,10 +44,7 @@ watch(
   vueState,
   () => {
     if (containerRef.value) {
-      main(containerRef.value, {
-        state: vueState,
-        setState: setStateWrapper,
-      });
+      main(containerRef.value, vueState, setStateWrapper);
     }
   },
   { deep: true },

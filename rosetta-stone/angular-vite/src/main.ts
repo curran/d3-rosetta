@@ -7,5 +7,6 @@ import { AppModule } from './app/app.module';
 //   enableProdMode();
 // }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .catch((err) => console.error(err));

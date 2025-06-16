@@ -15,7 +15,7 @@ const vueState = reactive({});
 // This function updates the reactive `vueState` object.
 const setStateWrapper = (updaterFn) => {
   const newState = updaterFn(vueState); // Calculate the new state based on the current
-  
+
   // Update properties of the reactive vueState object to match newState
   // First, remove keys from vueState that are not in newState
   for (const key in vueState) {
@@ -34,7 +34,10 @@ onMounted(() => {
   // Initial call to render the D3 visualization when the component mounts
   // and the container div (containerRef.value) is available.
   if (containerRef.value) {
-    main(containerRef.value, { state: vueState, setState: setStateWrapper });
+    main(containerRef.value, {
+      state: vueState,
+      setState: setStateWrapper,
+    });
   }
 });
 
@@ -44,10 +47,13 @@ watch(
   vueState,
   () => {
     if (containerRef.value) {
-      main(containerRef.value, { state: vueState, setState: setStateWrapper });
+      main(containerRef.value, {
+        state: vueState,
+        setState: setStateWrapper,
+      });
     }
   },
-  { deep: true }
+  { deep: true },
 );
 </script>
 

@@ -42,7 +42,6 @@ Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring t
 
 - [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection.
 - [`createMemoize`](#creatememoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered.
-- [`setter`](#setter) - Simplifies the management of individual properties within a state object.
 - [`createStateField`](#createstatefield) - Simplifies creating getters and setters for individual state properties.
 - [`unidirectionalDataFlow`](#unidirectionaldatalflow) - Establishes the unidirectional data flow pattern.
 
@@ -111,35 +110,6 @@ export const viz = (container, { state, setState }) => {
   console.log(computed); // Outputs the sum of a and b
 };
 ```
-
----
-
-### `setter`
-
-**`setter(setState, propertyName)`**
-
-The `setter` function creates a specialized setter function for managing individual properties within the state object. It returns a function that updates a specific property while preserving the rest of the state.
-
-```js
-import { setter } from 'd3-rosetta';
-
-export const viz = (container, { state, setState }) => {
-  const setName = setter(setState, 'name');
-
-  // Later in your code:
-  setName('Alice'); // Updates state.name to 'Alice'
-};
-```
-
-This utility simplifies state management by providing a clean way to update individual properties without manually spreading the state object. For reference, here's what it would look like without `setter`:
-
-```js
-const setName = (name) => {
-  setState((prev) => ({ ...prev, name }));
-};
-```
-
-If you need to update multiple properties at once, you can use the `setState` function directly. However, for updating individual properties, `setter` offers a more concise and readable alternative.
 
 ---
 
@@ -224,12 +194,12 @@ This section provides concrete examples of how to integrate a D3.js visualizatio
 The core visualization logic (referred to as `viz` or `main` in the examples) is assumed to follow the signature:
 `viz(container, { state, setState })`
 
-You can find these working examples in the `rosetta-stone` directory of this repository:
+You can find these examples in the `rosetta-stone` directory of this repository:
 
--   **Vanilla JS (HTML)**: See `rosetta-stone/vanilla-html/`
--   **React (Vite)**: See `rosetta-stone/react-vite/`
--   **Svelte (Vite)**: See `rosetta-stone/svelte-vite/`
--   **Vue (Vite)**: See `rosetta-stone/vue-vite/`
--   **Angular (Vite)**: See `rosetta-stone/angular-vite/`
+- **Vanilla JS (HTML)**: See `rosetta-stone/vanilla-html/`
+- **React (Vite)**: See `rosetta-stone/react-vite/`
+- **Svelte (Vite)**: See `rosetta-stone/svelte-vite/`
+- **Vue (Vite)**: See `rosetta-stone/vue-vite/`
+- **Angular (Vite)**: See `rosetta-stone/angular-vite/`
 
 These examples demonstrate how to manage state and trigger re-renders of the D3 visualization from within each specific framework, leveraging the utilities provided by `d3-rosetta` where applicable (like `unidirectionalDataFlow` for the vanilla JS example).

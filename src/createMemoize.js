@@ -1,9 +1,8 @@
 export const createMemoize = (node) => {
   let invocationCount = 0;
 
-  const memoize = (callback, dependencies) => {
+  return (callback, dependencies) => {
     const property = `@memoized-${invocationCount++}`;
-
     const memoized = node[property];
 
     if (
@@ -26,6 +25,4 @@ export const createMemoize = (node) => {
     node[property] = { dependencies, value };
     return value;
   };
-
-  return memoize;
 };

@@ -93,9 +93,11 @@ const memoize = createMemoize(container);
 The `memoize` function, returned by `createMemoize`, accepts a `callback` function (which performs the expensive computation) and an array of `dependencies`.
 
 - `callback`: A function that computes the value to be memoized.
-- `dependencies`: An array of values. If these values are the same as in the previous call for this specific memoization instance, the cached value is returned. Otherwise, the `callback` is executed, and its result is cached and returned.
+- `dependencies`: An array of values. If these dependency values are strictly equal (`===`) to the dependencies from the previous call for this specific memoization instance, the cached value is returned. Otherwise, the `callback` is executed, and its result is cached and returned.
 
 This pattern is similar to React's `useMemo` hook and is particularly useful for computationally intensive data processing or DOM rendering operations.
+
+#### Example:
 
 ```js
 import { createMemoize } from 'd3-rosetta';
@@ -171,14 +173,14 @@ The `unidirectionalDataFlow` function is a core utility that establishes and man
 - **`viz`**: A function that encapsulates the rendering logic of the visualization. This function is called by `unidirectionalDataFlow` initially and every time the state is updated. It receives three arguments:
   - `container`: The same `container` object passed to `unidirectionalDataFlow`.
   - `state`: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
-  - `setState`: A function to update the state. It accepts a callback function that receives the previous state and should return the new state (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
+  - `setState`: A function to update the state. It accepts a callback function that receives the previous state and should return the new state using [immutable update patterns](https://redux.js.org/usage/structuring-reducers/immutable-update-patterns) (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
 
 #### How it Works:
 
 1.  `unidirectionalDataFlow` initializes an internal `state` variable to an empty object (`{}`).
 2.  It defines a `setState` function. When this `setState(nextStateFn)` is called:
     a. The new state is computed: `state = nextStateFn(state)`.
-    b. The `viz` function is called again with the updated `state`: `viz(container, state, setState)`.
+    b. The `viz` function is called again with the `container`, the newly updated `state`, and the same (stable) `setState` function: `viz(container, state, setState)`.
 3.  Initially, `unidirectionalDataFlow` calls `viz(container, state, setState)` once to perform the first render with the initial empty state.
 
 This utility is fundamental for structuring D3 (or other rendering library) visualizations in a way that is self-contained and can be easily integrated into various JavaScript frameworks or run in a vanilla JavaScript environment. For a more detailed explanation of the pattern itself, see [The Solution: Unidirectional Data Flow](#the-solution-unidirectional-data-flow).

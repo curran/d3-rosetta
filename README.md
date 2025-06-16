@@ -25,14 +25,14 @@ While frameworks like React, Svelte, Vue, and Angular offer state management and
 Unidirectional data flow is a pattern that can be cleanly invoked from multiple frameworks. In this paradigm, a single function is responsible for updating the DOM or rendering visuals based on a single, central state. As the state updates, the function re-renders the visualization in an idempotent manner, meaning it can run multiple times without causing side effects. Here's what the entry point function looks like for a D3-based visualization that uses unidirectional data flow:
 
 ```js
-export const viz = (container, { state, setState }) => {
+export const viz = (container, state, setState) => {
   // Your reusable D3-based rendering logic goes here
 };
 ```
 
-- **`container`**: A DOM element where the visualization will be rendered
-- **`state`**: An object representing the current state of the application, initially empty
-- **`setState`**: A function that updates the state using immutable update patterns
+- **`container`**: A DOM element where the visualization will be rendered.
+- **`state`**: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
+- **`setState`**: A function to update the state. It accepts a callback function that receives the previous state and should return the new state (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
 
 Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive. This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be invoked from different frameworks as needed.
 
@@ -100,7 +100,7 @@ This pattern is similar to React's `useMemo` hook and is particularly useful for
 ```js
 import { createMemoize } from 'd3-rosetta';
 
-export const viz = (container, { state, setState }) => {
+export const viz = (container, state, setState) => {
   const { a, b } = state;
   const memoize = createMemoize(container); // `container` is the DOM node here
   const computed = memoize(() => {
@@ -136,7 +136,7 @@ The `stateField` function (returned by `createStateField`) takes a `propertyName
 ```javascript
 import { createStateField } from 'd3-rosetta';
 
-export const viz = (container, { state, setState }) => {
+export const viz = (container, state, setState) => {
   const stateField = createStateField(state, setState);
 
   const [name, setName] = stateField('name'); // Gets state.name and a setter for state.name
@@ -192,7 +192,7 @@ The example under [Vanilla JS](#vanilla-js) in the Rosetta Stone section also de
 This section provides concrete examples of how to integrate a D3.js visualization using the unidirectional data flow pattern into various JavaScript frameworks and vanilla JavaScript setups. Each example aims to be a minimal, runnable project, typically set up with Vite.
 
 The core visualization logic (referred to as `viz` or `main` in the examples) is assumed to follow the signature:
-`viz(container, { state, setState })`
+`viz(container, state, setState)`
 
 You can find these examples in the `rosetta-stone` directory of this repository:
 

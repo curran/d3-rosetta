@@ -17,7 +17,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "vitest",
+    "test": "vitest run",
     "prettier": "prettier {*.*,**/*.*} --write",
     "build": "vite build",
     "prepublishOnly": "npm run build"

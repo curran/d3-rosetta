@@ -1,4 +1,4 @@
-import { unidirectionalDataFlow } from '../../src/unidirectionalDataFlow.js';
+import { unidirectionalDataFlow } from 'd3-rosetta';
 import { main } from './viz/index.js';
 
 const container = document.getElementById('viz-container');

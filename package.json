@@ -5,8 +5,10 @@
   "type": "module",
   "main": "./dist/d3-rosetta.esm.js",
   "module": "./dist/d3-rosetta.esm.js",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./dist/d3-rosetta.esm.js",
       "require": "./dist/d3-rosetta.umd.js"
     }
@@ -14,7 +16,8 @@
   "jsdelivr": "./dist/d3-rosetta.esm.js",
   "unpkg": "./dist/d3-rosetta.umd.js",
   "files": [
-    "dist/"
+    "dist/",
+    "index.d.ts"
   ],
   "scripts": {
     "test": "vitest run",

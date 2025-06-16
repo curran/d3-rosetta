@@ -1,0 +1,19 @@
+{
+  "name": "d3-rosetta-svelte-vite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "d3": "^7.9.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "svelte": "^4.2.18",
+    "vite": "^5.3.4"
+  }
+}

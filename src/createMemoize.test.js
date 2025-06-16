@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest';
-import { createMemoizer } from './createMemoizer';
+import { createMemoize } from './createMemoize';
 
 test('adds 1 + 2 to equal 3', () => {
-  const memoize = createMemoizer({});
+  const memoize = createMemoize({});
   expect(memoize(() => 1 + 2, [])).toBe(3);
 });
 
@@ -10,7 +10,7 @@ test('does not recompute if dependencies unchanged (zero dependencies)', () => {
   const container = {};
   let invocationCount = 0;
   const main = () => {
-    const memoize = createMemoizer(container);
+    const memoize = createMemoize(container);
     const computed = memoize(() => {
       invocationCount++;
       return 1 + 2;
@@ -25,13 +25,12 @@ test('does not recompute if dependencies unchanged (zero dependencies)', () => {
 });
 
 test('does not recompute if dependencies unchanged (2 dependencies)', () => {
-  // test("does recompute if dependencies changed", () => {
   const container = {};
   let invocationCount = 0;
   let a = 1;
   let b = 2;
   const main = () => {
-    const memoize = createMemoizer(container);
+    const memoize = createMemoize(container);
     const computed = memoize(() => {
       invocationCount++;
       return a + b;
@@ -51,7 +50,7 @@ test('does recompute if dependencies changed', () => {
   let a = 1;
   let b = 2;
   const main = () => {
-    const memoize = createMemoizer(container);
+    const memoize = createMemoize(container);
     const computed = memoize(() => {
       invocationCount++;
       return a + b;
@@ -72,7 +71,7 @@ test('multiple invocations on one instance', () => {
   let a = 1;
   let b = 2;
   const main = ({ container }) => {
-    const memoize = createMemoizer(container);
+    const memoize = createMemoize(container);
 
     const aSquared = memoize(() => {
       invocationCountASquared++;

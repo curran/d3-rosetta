@@ -1,8 +1,11 @@
-export const one = (selection, name, className) =>
+export const one = (selection, tagName, className) =>
   className
     ? selection
-        .selectAll(`${name}.${className}`)
+        .selectAll(`${tagName}.${className}`)
         .data([null])
-        .join(name)
+        .join(tagName)
         .attr('class', className)
-    : selection.selectAll(name).data([null]).join(name);
+    : selection
+        .selectAll(tagName)
+        .data([null])
+        .join(tagName);

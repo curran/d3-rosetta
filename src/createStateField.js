@@ -2,8 +2,8 @@ export const createStateField =
   (state, setState) => (propertyName) => [
     state[propertyName],
     (value) => {
-      setState((state) => ({
-        ...state,
+      setState((previousState) => ({
+        ...previousState,
         [propertyName]: value,
       }));
     },

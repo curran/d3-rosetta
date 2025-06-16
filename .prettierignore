@@ -1,4 +1,5 @@
 .gitignore
 .prettierignore
 *.svg
+*.svelte
 dist

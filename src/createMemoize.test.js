@@ -119,6 +119,132 @@ test('multiple invocations on one instance', () => {
   expect(invocationCountBSquared).toBe(3);
 });
 
+test('recomputes if object dependency reference changes, not if content mutates', () => {
+  const container = {};
+  let callCount = 0;
+  let depObj = { val: 1 };
+
+  const run = () => {
+    const memoize = createMemoize(container);
+    return memoize(() => {
+      callCount++;
+      return depObj.val * 2;
+    }, [depObj]);
+  };
+
+  run();
+  expect(callCount).toBe(1);
+
+  // Mutate content, but same reference: should not recompute
+  depObj.val = 2;
+  run();
+  expect(callCount).toBe(1); // Still 1 because depObj reference hasn't changed
+
+  // Change reference, even if content is "same": should recompute
+  depObj = { val: 2 };
+  run();
+  expect(callCount).toBe(2);
+
+  // Change reference to new content: should recompute
+  depObj = { val: 3 };
+  run();
+  expect(callCount).toBe(3);
+});
+
+test('recomputes if array dependency reference changes, not if content mutates', () => {
+  const container = {};
+  let callCount = 0;
+  let depArray = [1];
+
+  const run = () => {
+    const memoize = createMemoize(container);
+    return memoize(() => {
+      callCount++;
+      return depArray[0] * 2;
+    }, [depArray]);
+  };
+
+  run();
+  expect(callCount).toBe(1);
+
+  // Mutate content, but same reference: should not recompute
+  depArray[0] = 2;
+  run();
+  expect(callCount).toBe(1);
+
+  // Change reference, even if content is "same": should recompute
+  depArray = [2];
+  run();
+  expect(callCount).toBe(2);
+
+  // Change reference to new content: should recompute
+  depArray = [3];
+  run();
+  expect(callCount).toBe(3);
+});
+
+test('handles null and undefined dependencies correctly', () => {
+  const container = {};
+  let callCount = 0;
+  let dep = null;
+
+  const run = () => {
+    const memoize = createMemoize(container);
+    return memoize(() => {
+      callCount++;
+      return String(dep);
+    }, [dep]);
+  };
+
+  run(); // dep is null
+  expect(callCount).toBe(1);
+  expect(run()).toBe('null'); // dep is still null
+  expect(callCount).toBe(1);
+
+  dep = undefined;
+  run(); // dep is undefined
+  expect(callCount).toBe(2);
+  expect(run()).toBe('undefined'); // dep is still undefined
+  expect(callCount).toBe(2);
+
+  dep = null;
+  run(); // dep is null again
+  expect(callCount).toBe(3);
+  expect(run()).toBe('null');
+  expect(callCount).toBe(3);
+});
+
+test('recomputes if a dependency was NaN and is still NaN', () => {
+  const container = {};
+  let callCount = 0;
+  let dep = NaN;
+
+  const run = () => {
+    const memoize = createMemoize(container);
+    return memoize(() => {
+      callCount++;
+      return String(dep);
+    }, [dep]);
+  };
+
+  run(); // dep is NaN
+  expect(callCount).toBe(1);
+
+  // dep is still NaN. Because NaN !== NaN is true, it will recompute.
+  run();
+  expect(callCount).toBe(2);
+
+  dep = 1;
+  run();
+  expect(callCount).toBe(3);
+  run(); // dep is still 1
+  expect(callCount).toBe(3);
+
+  dep = NaN;
+  run();
+  expect(callCount).toBe(4);
+});
+
 // test('accepts a D3 selection', () => {
 //   const domNode = {};
 //   let invocationCount = 0;

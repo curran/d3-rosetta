@@ -5,7 +5,7 @@ import jsdom from 'jsdom';
 
 const { JSDOM } = jsdom;
 
-test('selection.one(name) manages a single element', () => {
+test('selection.one(tagName) manages a single element', () => {
   const dom = new JSDOM("<div id='container'></div>");
   const container =
     dom.window.document.querySelector('#container');
@@ -15,7 +15,7 @@ test('selection.one(name) manages a single element', () => {
   expect(div._groups[0][0].tagName).toBe('DIV');
 });
 
-test('selection.one(name, class) elements by class', () => {
+test('selection.one(tagName, class) elements by class', () => {
   const dom = new JSDOM("<div id='container'></div>");
   const container =
     dom.window.document.querySelector('#container');

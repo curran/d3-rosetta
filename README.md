@@ -49,9 +49,9 @@ Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring t
 
 ### `one`
 
-**`one(selection, name[, className])`**
+**`one(selection, tagName[, className])`**
 
-The `one` function is a convenience utility designed to simplify the management of single DOM elements within a D3 selection. It ensures that only one element of the specified `name` (e.g., 'g', 'rect') exists within the given `selection`. Optionally, it can also apply a `className` to disambiguate between siblings of the same tag.
+The `one` function is a convenience utility designed to simplify the management of single DOM elements within a D3 selection. It ensures that only one element of the specified `tagName` (e.g., 'g', 'rect') exists within the given `selection`. Optionally, it can also apply a `className` to disambiguate between siblings of the same tag.
 
 #### Example:
 

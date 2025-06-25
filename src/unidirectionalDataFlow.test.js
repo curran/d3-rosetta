@@ -10,14 +10,14 @@ test('unidirectionalDataFlow initializes and updates state', () => {
 
   // Check initial call
   expect(vizMock).toHaveBeenCalledTimes(1);
-  expect(vizMock).toHaveBeenCalledWith(
+  expect(vizMock).toHaveBeenCalledWith({
     container,
-    {}, // state
-    expect.any(Function), // setState
-  );
+    state: {},
+    setState: expect.any(Function),
+  });
 
   // Get the setState function from the first call's arguments
-  const setState = vizMock.mock.calls[0][2];
+  const { setState } = vizMock.mock.calls[0][0];
 
   // Simulate a state update
   const newState = { count: 1 };
@@ -25,11 +25,11 @@ test('unidirectionalDataFlow initializes and updates state', () => {
 
   // Check if vizMock was called again with the new state
   expect(vizMock).toHaveBeenCalledTimes(2);
-  expect(vizMock).toHaveBeenCalledWith(
+  expect(vizMock).toHaveBeenCalledWith({
     container,
-    newState, // state
+    state: newState,
     setState,
-  );
+  });
 
   // Simulate another state update
   const newerState = { count: 2 };
@@ -39,11 +39,11 @@ test('unidirectionalDataFlow initializes and updates state', () => {
   }));
 
   expect(vizMock).toHaveBeenCalledTimes(3);
-  expect(vizMock).toHaveBeenCalledWith(
+  expect(vizMock).toHaveBeenCalledWith({
     container,
-    newerState, // state
+    state: newerState,
     setState,
-  );
+  });
 });
 
 test('unidirectionalDataFlow uses initial state from viz if provided', () => {
@@ -51,11 +51,11 @@ test('unidirectionalDataFlow uses initial state from viz if provided', () => {
   const initialVizState = { message: 'hello' };
 
   // viz function that sets an initial state if state is empty
-  const vizWithInitialState = (
+  const vizWithInitialState = ({
     container,
     state,
     setState,
-  ) => {
+  }) => {
     if (Object.keys(state).length === 0) {
       setState(() => initialVizState);
     }
@@ -67,16 +67,14 @@ test('unidirectionalDataFlow uses initial state from viz if provided', () => {
 
   // Called once for initialization, then once for setState from within viz
   expect(vizSpy).toHaveBeenCalledTimes(2);
-  expect(vizSpy).toHaveBeenNthCalledWith(
-    1,
+  expect(vizSpy).toHaveBeenNthCalledWith(1, {
     container,
-    {}, // state
-    expect.any(Function), // setState
-  );
-  expect(vizSpy).toHaveBeenNthCalledWith(
-    2,
+    state: {},
+    setState: expect.any(Function),
+  });
+  expect(vizSpy).toHaveBeenNthCalledWith(2, {
     container,
-    initialVizState, // state
-    expect.any(Function), // setState
-  );
+    state: initialVizState,
+    setState: expect.any(Function),
+  });
 });

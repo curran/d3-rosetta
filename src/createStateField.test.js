@@ -6,7 +6,7 @@ test('createStateField returns the correct state value and setter function using
   const mockContainer = {}; // Mock container for unidirectionalDataFlow
   const testScope = {}; // To store values/setters from viz for assertions
   // The viz function will be called by unidirectionalDataFlow on init and after each setState
-  const viz = (container, state, setState) => {
+  const viz = ({ container, state, setState }) => {
     const stateField = createStateField(state, setState);
     const [name, setName] = stateField('name');
     testScope.name = name;

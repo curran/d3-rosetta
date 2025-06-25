@@ -43,7 +43,7 @@ Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring t
 - [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection.
 - [`createMemoize`](#creatememoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered.
 - [`createStateField`](#createstatefield) - Simplifies creating getters and setters for individual state properties.
-- [`unidirectionalDataFlow`](#unidirectionaldatalflow) - Establishes the unidirectional data flow pattern.
+- [`unidirectionalDataFlow`](#unidirectionaldataflow) - Establishes the unidirectional data flow pattern.
 
 ---
 
@@ -205,3 +205,11 @@ You can find these examples in the `rosetta-stone` directory of this repository:
 - **Angular (Vite)**: See `rosetta-stone/angular-vite/`
 
 These examples demonstrate how to manage state and trigger re-renders of the D3 visualization from within each specific framework, leveraging the utilities provided by `d3-rosetta` where applicable (like `unidirectionalDataFlow` for the vanilla JS example).
+
+In general, when integrating a `viz` function into a framework like **React, Svelte, or Vue**, developers should use the framework's native primitives for memoization and side effects, namely:
+
+- In **React**, use `useMemo` and `useEffect`.
+- In **Svelte**, use reactive declarations (`$:`) and `onMount`/`onDestroy`.
+- In **Vue**, use `computed` and `watchEffect`.
+
+The core pattern that `d3-rosetta` champions is the `viz(container, state, setState)` function signature and the unidirectional data flow. The helper utilities are a temporary bridge for non-framework environments. The long-term vision is for the `rosetta-stone` examples to demonstrate how to best integrate the core pattern using the host framework's own powerful and idiomatic tools for managing state, side effects, and performance.

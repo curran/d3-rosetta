@@ -43,6 +43,7 @@ Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring t
 - [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection.
 - [`createMemoize`](#creatememoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered.
 - [`createStateField`](#createstatefield) - Simplifies creating getters and setters for individual state properties.
+- [`runAsyncEffect`](#runasynceffect) - Handles one-time asynchronous operations like data fetching.
 - [`unidirectionalDataFlow`](#unidirectionaldataflow) - Establishes the unidirectional data flow pattern.
 
 ---
@@ -160,6 +161,63 @@ export const viz = ({ container, state, setState }) => {
 ```
 
 This utility helps reduce boilerplate code when managing multiple state properties, making component logic cleaner and more focused on the specific fields being handled.
+
+---
+
+### `runAsyncEffect`
+
+**`runAsyncEffect({ data, setData, getData })`**
+
+The `runAsyncEffect` utility is designed to handle one-time asynchronous operations, such as fetching data, within the unidirectional data flow pattern. It ensures that an async task is executed only once, the first time it's called (when its corresponding state is empty).
+
+It accepts a single options object with the following properties:
+
+- `data`: The current value of the state slice this effect is managing. The effect will only run if `data` is `undefined` or `null`.
+- `setData`: The setter function for this specific state slice (typically obtained from `createStateField`).
+- `getData`: A function that returns the promise to execute (e.g., `() => d3.csv(url)`).
+
+When called, `runAsyncEffect` checks if `data` is present. If not, it immediately calls `setData` to update the state to a `pending` status, then executes the `getData`. When the promise settles, it calls `setData` again with the final status (`resolved` or `rejected`).
+
+The state object it manages will have one of the following structures:
+- `{ status: 'pending' }`
+- `{ status: 'resolved', value: ... }`
+- `{ status: 'rejected', error: ... }`
+
+#### Example:
+
+```javascript
+import { csv } from 'd3';
+import { createStateField, runAsyncEffect } from 'd3-rosetta';
+
+export const viz = ({ container, state, setState }) => {
+  const stateField = createStateField(state, setState);
+  const [data, setData] = stateField('data');
+
+  // This will fetch data only on the first render.
+  runAsyncEffect({
+    data,
+    setData,
+    getData: () => csv('data.csv'),
+  });
+
+  // Render UI based on the state of the data request.
+  if (!data || data.status === 'pending') {
+    // Render loading indicator
+    return;
+  }
+
+  if (data.status === 'rejected') {
+    // Render error message
+    return;
+  }
+
+  // On success, data is { status: 'resolved', value: [...] }
+  const resolvedData = data.value;
+  // Render the visualization with the data
+};
+```
+
+This utility simplifies handling loading and error states for asynchronous operations in a way that is clean, declarative, and fits perfectly within the unidirectional data flow model.
 
 ---
 

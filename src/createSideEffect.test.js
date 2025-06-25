@@ -91,7 +91,7 @@ test('does re-run if dependencies changed, and invokes cleanup function', () => 
   expect(cleanupCount).toBe(1);
 });
 
-test('multiple invocations on one instance', () => {
+test('multiple invocations on one instance and cleanup', () => {
   const container = {};
   let effectAInvocations = 0;
   let cleanupAInvocations = 0;
@@ -100,8 +100,10 @@ test('multiple invocations on one instance', () => {
   let a = 1;
   let b = 2;
 
+  let sideEffect;
+
   const main = () => {
-    const sideEffect = createSideEffect(container);
+    sideEffect = createSideEffect(container);
 
     sideEffect(() => {
       effectAInvocations++;
@@ -150,6 +152,13 @@ test('multiple invocations on one instance', () => {
   expect(effectBInvocations).toBe(2);
   expect(cleanupBInvocations).toBe(1);
 
-  // TODO test that invoking sideEffect.cleanup() cleans up all effects
-  // sideEffect.cleanup();
+  // test that invoking sideEffect.cleanup() cleans up all effects
+  sideEffect.cleanup();
+  expect(cleanupAInvocations).toBe(2);
+  expect(cleanupBInvocations).toBe(2);
+
+  // Calling cleanup again should have no effect
+  sideEffect.cleanup();
+  expect(cleanupAInvocations).toBe(2);
+  expect(cleanupBInvocations).toBe(2);
 });

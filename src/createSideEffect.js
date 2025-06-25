@@ -1,7 +1,7 @@
 export const createSideEffect = (node) => {
   let invocationCount = 0;
 
-  return (effect, dependencies) => {
+  const sideEffect = (effect, dependencies) => {
     const property = `@side-effect-${invocationCount++}`;
     const memoized = node[property];
 
@@ -28,4 +28,18 @@ export const createSideEffect = (node) => {
     const cleanup = effect();
     node[property] = { dependencies, cleanup };
   };
+
+  sideEffect.cleanup = () => {
+    Object.keys(node).forEach((key) => {
+      if (key.startsWith('@side-effect-')) {
+        const memoized = node[key];
+        if (memoized && memoized.cleanup) {
+          memoized.cleanup();
+        }
+        delete node[key];
+      }
+    });
+  };
+
+  return sideEffect;
 };

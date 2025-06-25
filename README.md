@@ -138,6 +138,10 @@ The `sideEffect` function, returned by `createSideEffect`, accepts an `effect` f
 
 This pattern is similar to React's `useEffect` hook and is essential for managing resources and external interactions within a declarative rendering environment.
 
+**`sideEffect.cleanup()`**
+
+The `sideEffect` function also has a `cleanup` method attached to it. Calling `sideEffect.cleanup()` will execute the cleanup functions for all side effects managed by this instance and remove their state from the `node`. This is useful for cleaning up all subscriptions or other resources when a component is unmounted. After calling this, subsequent renders will re-initialize the side effects from scratch.
+
 #### Example:
 
 ```javascript

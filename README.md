@@ -32,7 +32,7 @@ export const viz = ({ container, state, setState }) => {
 
 - **`container`**: A DOM element where the visualization will be rendered.
 - **`state`**: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
-- **`setState`**: A function to update the state. It accepts a callback function that receives the previous state and should return the new state (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
+- **`setState`**: A function to update the state. It accepts a callback function that receives the previous state and should return the new state (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers a re-execution of the `viz` function with the updated state.
 
 Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive. This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be invoked from different frameworks as needed.
 
@@ -165,23 +165,30 @@ This utility helps reduce boilerplate code when managing multiple state properti
 
 ### `unidirectionalDataFlow`
 
-**`unidirectionalDataFlow(container, viz)`**
+**`unidirectionalDataFlow(container)`**
 
-The `unidirectionalDataFlow` function is a core utility that establishes and manages the unidirectional data flow pattern for a visualization. It handles state initialization and updates, and ensures the visualization (`viz` function) is re-rendered whenever the state changes.
+The `unidirectionalDataFlow` function is a core utility that establishes and manages the unidirectional data flow pattern for a visualization. It creates a `root` object that handles state initialization and updates, and ensures the visualization (`viz` function) is re-rendered whenever the state changes.
 
 - **`container`**: A DOM element (or a mock object in tests) where the visualization will be rendered or attached. This `container` is passed through to the `viz` function.
-- **`viz`**: A function that encapsulates the rendering logic of the visualization. This function is called by `unidirectionalDataFlow` initially and every time the state is updated. It receives a single options object with the following properties:
+
+It returns a `root` object with a `render` method.
+
+**`root.render(viz)`**
+
+- **`viz`**: A function that encapsulates the rendering logic of the visualization. This function is called by `root.render()` initially and every time the state is updated. It receives a single options object with the following properties:
   - `container`: The same `container` object passed to `unidirectionalDataFlow`.
   - `state`: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
-  - `setState`: A function to update the state. It accepts a callback function that receives the previous state and should return the new state using [immutable update patterns](https://redux.js.org/usage/structuring-reducers/immutable-update-patterns) (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
+  - `setState`: A function to update the state. It accepts a callback function that receives the previous state and should return the new state using [immutable update patterns](https://redux.js.org/usage/structuring-reducers/immutable-update-patterns) (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers a re-execution of the `viz` function with the updated state.
 
 #### How it Works:
 
-1.  `unidirectionalDataFlow` initializes an internal `state` variable to an empty object (`{}`).
-2.  It defines a `setState` function. When this `setState(nextStateFn)` is called:
+1.  `unidirectionalDataFlow(container)` creates a `root` object and initializes an internal `state` variable to an empty object (`{}`).
+2.  The returned `root` object has a `render(viz)` method. When `root.render(viz)` is called:
+    a. It sets the provided `viz` function as the current visualization logic.
+    b. It performs an initial render by calling `viz({ container, state, setState })`.
+3.  A stable `setState` function is passed to `viz`. When this `setState(nextStateFn)` is called:
     a. The new state is computed: `state = nextStateFn(state)`.
-    b. The `viz` function is called again with the `container`, the newly updated `state`, and the same (stable) `setState` function: `viz({ container, state, setState })`.
-3.  Initially, `unidirectionalDataFlow` calls `viz({ container, state, setState })` once to perform the first render with the initial empty state.
+    b. The current `viz` function is called again with the `container`, the newly updated `state`, and the same `setState` function: `viz({ container, state, setState })`.
 
 This utility is fundamental for structuring D3 (or other rendering library) visualizations in a way that is self-contained and can be easily integrated into various JavaScript frameworks or run in a vanilla JavaScript environment. For a more detailed explanation of the pattern itself, see [The Solution: Unidirectional Data Flow](#the-solution-unidirectional-data-flow).
 

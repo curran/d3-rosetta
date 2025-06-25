@@ -22,7 +22,8 @@ test('createStateField returns the correct state value and setter function using
 
   // Initialize unidirectionalDataFlow. This will call viz once.
   // unidirectionalDataFlow's internal state starts as {}.
-  unidirectionalDataFlow(mockContainer, viz);
+  const root = unidirectionalDataFlow(mockContainer);
+  root.render(viz);
 
   // Initial checks (after first viz run)
   // `name` and `age` will be undefined as they don't exist in UDF's initial {} state.

@@ -1,8 +1,16 @@
-export const unidirectionalDataFlow = (container, viz) => {
+export const unidirectionalDataFlow = (container) => {
   let state = {};
+  let currentViz = () => {}; // no-op
+
   const setState = (next) => {
     state = next(state);
-    viz({ container, state, setState });
+    currentViz({ container, state, setState });
   };
-  viz({ container, state, setState });
+
+  return {
+    render: (viz) => {
+      currentViz = viz;
+      currentViz({ container, state, setState });
+    },
+  };
 };

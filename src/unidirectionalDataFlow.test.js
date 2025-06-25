@@ -6,7 +6,8 @@ test('unidirectionalDataFlow initializes and updates state', () => {
   const vizMock = vi.fn(); // Mock viz function
 
   // Initial call
-  unidirectionalDataFlow(container, vizMock);
+  const root = unidirectionalDataFlow(container);
+  root.render(vizMock);
 
   // Check initial call
   expect(vizMock).toHaveBeenCalledTimes(1);
@@ -63,7 +64,8 @@ test('unidirectionalDataFlow uses initial state from viz if provided', () => {
 
   const vizSpy = vi.fn(vizWithInitialState);
 
-  unidirectionalDataFlow(container, vizSpy);
+  const root = unidirectionalDataFlow(container);
+  root.render(vizSpy);
 
   // Called once for initialization, then once for setState from within viz
   expect(vizSpy).toHaveBeenCalledTimes(2);

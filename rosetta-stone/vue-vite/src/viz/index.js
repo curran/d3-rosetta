@@ -1,6 +1,6 @@
 import { select } from 'd3';
 
-export const main = (container, state, setState) => {
+export const main = (container, { state, setState }) => {
   const selectedId = state.selectedId;
   const setSelectedId = (id) => {
     setState((state) => ({

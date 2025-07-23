@@ -5,10 +5,12 @@ export type SetState<S> = (
   updater: (prevState: S) => S,
 ) => void;
 
-export type VizFunction<S, C> = (
+export type MainFunction<S, C> = (
   container: C,
-  state: S,
-  setState: SetState<S>,
+  options: {
+    state: S;
+    setState: SetState<S>;
+  },
 ) => void;
 
 // Type for the tuple returned by stateField
@@ -65,11 +67,11 @@ export function createMemoize(
  * Establishes and manages a unidirectional data flow pattern for a visualization.
  *
  * @param container A DOM element or object where the visualization will be rendered or attached.
- * @param viz A function that encapsulates the rendering logic of the visualization.
+ * @param main A function that encapsulates the rendering logic of the visualization.
  */
 export function unidirectionalDataFlow<S, C>(
   container: C,
-  viz: VizFunction<S, C>,
+  main: MainFunction<S, C>,
 ): void;
 
 /**

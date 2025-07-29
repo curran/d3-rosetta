@@ -4,9 +4,9 @@ import { unidirectionalDataFlow } from './unidirectionalDataFlow.js';
 
 test('createStateField returns the correct state value and setter function using unidirectionalDataFlow', () => {
   const mockContainer = {}; // Mock container for unidirectionalDataFlow
-  const testScope = {}; // To store values/setters from viz for assertions
-  // The viz function will be called by unidirectionalDataFlow on init and after each setState
-  const viz = (container, state, setState) => {
+  const testScope = {}; // To store values/setters from main for assertions
+  // The main function will be called by unidirectionalDataFlow on init and after each setState
+  const main = (container, { state, setState }) => {
     const stateField = createStateField(state, setState);
     const [name, setName] = stateField('name');
     testScope.name = name;
@@ -20,11 +20,11 @@ test('createStateField returns the correct state value and setter function using
     testScope.currentState = state;
   };
 
-  // Initialize unidirectionalDataFlow. This will call viz once.
+  // Initialize unidirectionalDataFlow. This will call main once.
   // unidirectionalDataFlow's internal state starts as {}.
-  unidirectionalDataFlow(mockContainer, viz);
+  unidirectionalDataFlow(mockContainer, main);
 
-  // Initial checks (after first viz run)
+  // Initial checks (after first main run)
   // `name` and `age` will be undefined as they don't exist in UDF's initial {} state.
   expect(testScope.name).toBe(undefined);
   expect(testScope.currentState.name).toBe(undefined);
@@ -32,8 +32,8 @@ test('createStateField returns the correct state value and setter function using
   expect(testScope.currentState.age).toBe(undefined);
 
   // Test setting name
-  testScope.setName('Alice'); // This triggers setState in UDF, then UDF calls viz again
-  // After viz runs, testScope.name and testScope.currentState are updated
+  testScope.setName('Alice'); // This triggers setState in UDF, then UDF calls main again
+  // After main runs, testScope.name and testScope.currentState are updated
   expect(testScope.name).toBe('Alice');
   expect(testScope.currentState.name).toBe('Alice');
 

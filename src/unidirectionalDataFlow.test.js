@@ -3,33 +3,31 @@ import { unidirectionalDataFlow } from './unidirectionalDataFlow.js';
 
 test('unidirectionalDataFlow initializes and updates state', () => {
   const container = {}; // Mock container
-  const vizMock = vi.fn(); // Mock viz function
+  const mainMock = vi.fn(); // Mock main function
 
   // Initial call
-  unidirectionalDataFlow(container, vizMock);
+  unidirectionalDataFlow(container, mainMock);
 
   // Check initial call
-  expect(vizMock).toHaveBeenCalledTimes(1);
-  expect(vizMock).toHaveBeenCalledWith(
-    container,
-    {}, // state
-    expect.any(Function), // setState
-  );
+  expect(mainMock).toHaveBeenCalledTimes(1);
+  expect(mainMock).toHaveBeenCalledWith(container, {
+    state: {},
+    setState: expect.any(Function),
+  });
 
   // Get the setState function from the first call's arguments
-  const setState = vizMock.mock.calls[0][2];
+  const { setState } = mainMock.mock.calls[0][1];
 
   // Simulate a state update
   const newState = { count: 1 };
   setState(() => newState);
 
-  // Check if vizMock was called again with the new state
-  expect(vizMock).toHaveBeenCalledTimes(2);
-  expect(vizMock).toHaveBeenCalledWith(
-    container,
-    newState, // state
+  // Check if mainMock was called again with the new state
+  expect(mainMock).toHaveBeenCalledTimes(2);
+  expect(mainMock).toHaveBeenCalledWith(container, {
+    state: newState,
     setState,
-  );
+  });
 
   // Simulate another state update
   const newerState = { count: 2 };
@@ -38,45 +36,39 @@ test('unidirectionalDataFlow initializes and updates state', () => {
     ...newerState,
   }));
 
-  expect(vizMock).toHaveBeenCalledTimes(3);
-  expect(vizMock).toHaveBeenCalledWith(
-    container,
-    newerState, // state
+  expect(mainMock).toHaveBeenCalledTimes(3);
+  expect(mainMock).toHaveBeenCalledWith(container, {
+    state: newerState,
     setState,
-  );
+  });
 });
 
-test('unidirectionalDataFlow uses initial state from viz if provided', () => {
+test('unidirectionalDataFlow uses initial state from main if provided', () => {
   const container = {};
-  const initialVizState = { message: 'hello' };
+  const initialMainState = { message: 'hello' };
 
-  // viz function that sets an initial state if state is empty
-  const vizWithInitialState = (
+  // main function that sets an initial state if state is empty
+  const mainWithInitialState = (
     container,
-    state,
-    setState,
+    { state, setState },
   ) => {
     if (Object.keys(state).length === 0) {
-      setState(() => initialVizState);
+      setState(() => initialMainState);
     }
   };
 
-  const vizSpy = vi.fn(vizWithInitialState);
+  const mainSpy = vi.fn(mainWithInitialState);
 
-  unidirectionalDataFlow(container, vizSpy);
+  unidirectionalDataFlow(container, mainSpy);
 
-  // Called once for initialization, then once for setState from within viz
-  expect(vizSpy).toHaveBeenCalledTimes(2);
-  expect(vizSpy).toHaveBeenNthCalledWith(
-    1,
-    container,
-    {}, // state
-    expect.any(Function), // setState
-  );
-  expect(vizSpy).toHaveBeenNthCalledWith(
-    2,
-    container,
-    initialVizState, // state
-    expect.any(Function), // setState
-  );
+  // Called once for initialization, then once for setState from within main
+  expect(mainSpy).toHaveBeenCalledTimes(2);
+  expect(mainSpy).toHaveBeenNthCalledWith(1, container, {
+    state: {},
+    setState: expect.any(Function),
+  });
+  expect(mainSpy).toHaveBeenNthCalledWith(2, container, {
+    state: initialMainState,
+    setState: expect.any(Function),
+  });
 });

@@ -25,16 +25,16 @@ While frameworks like React, Svelte, Vue, and Angular offer state management and
 Unidirectional data flow is a pattern that can be cleanly invoked from multiple frameworks. In this paradigm, a single function is responsible for updating the DOM or rendering visuals based on a single, central state. As the state updates, the function re-renders the visualization in an idempotent manner, meaning it can run multiple times without causing side effects. Here's what the entry point function looks like for a D3-based visualization that uses unidirectional data flow:
 
 ```js
-export const viz = (container, state, setState) => {
+export const main = (container, { state, setState }) => {
   // Your reusable D3-based rendering logic goes here
 };
 ```
 
 - **`container`**: A DOM element where the visualization will be rendered.
 - **`state`**: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
-- **`setState`**: A function to update the state. It accepts a callback function that receives the previous state and should return the new state (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
+- **`setState`**: A function to update the state. It accepts a callback function that receives the previous state and should return the new state (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `main` function with the updated state.
 
-Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive. This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be invoked from different frameworks as needed.
+Whenever `setState` is invoked, `main` re-executes with the new state, ensuring that the rendering logic is both dynamic and responsive. This pattern is implemented in the [VizHub](https://vizhub.com/) runtime environment and can be invoked from different frameworks as needed.
 
 ## Utilities
 
@@ -102,7 +102,7 @@ This pattern is similar to React's `useMemo` hook and is particularly useful for
 ```js
 import { createMemoize } from 'd3-rosetta';
 
-export const viz = (container, state, setState) => {
+export const main = (container, { state, setState }) => {
   const { a, b } = state;
   const memoize = createMemoize(container); // `container` is the DOM node here
   const computed = memoize(() => {
@@ -138,7 +138,7 @@ The `stateField` function (returned by `createStateField`) takes a `propertyName
 ```javascript
 import { createStateField } from 'd3-rosetta';
 
-export const viz = (container, state, setState) => {
+export const main = (container, { state, setState }) => {
   const stateField = createStateField(state, setState);
 
   const [name, setName] = stateField('name'); // Gets state.name and a setter for state.name
@@ -165,23 +165,24 @@ This utility helps reduce boilerplate code when managing multiple state properti
 
 ### `unidirectionalDataFlow`
 
-**`unidirectionalDataFlow(container, viz)`**
+**`unidirectionalDataFlow(container, main)`**
 
-The `unidirectionalDataFlow` function is a core utility that establishes and manages the unidirectional data flow pattern for a visualization. It handles state initialization and updates, and ensures the visualization (`viz` function) is re-rendered whenever the state changes.
+The `unidirectionalDataFlow` function is a core utility that establishes and manages the unidirectional data flow pattern for a visualization. It handles state initialization and updates, and ensures the visualization (`main` function) is re-rendered whenever the state changes.
 
-- **`container`**: A DOM element (or a mock object in tests) where the visualization will be rendered or attached. This `container` is passed through to the `viz` function.
-- **`viz`**: A function that encapsulates the rendering logic of the visualization. This function is called by `unidirectionalDataFlow` initially and every time the state is updated. It receives three arguments:
+- **`container`**: A DOM element (or a mock object in tests) where the visualization will be rendered or attached. This `container` is passed through to the `main` function.
+- **`main`**: A function that encapsulates the rendering logic of the visualization. This function is called by `unidirectionalDataFlow` initially and every time the state is updated. It receives two arguments:
   - `container`: The same `container` object passed to `unidirectionalDataFlow`.
-  - `state`: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
-  - `setState`: A function to update the state. It accepts a callback function that receives the previous state and should return the new state using [immutable update patterns](https://redux.js.org/usage/structuring-reducers/immutable-update-patterns) (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `viz` function with the updated state.
+  - `{state, setState}`: An object containing:
+    - `state`: An object representing the current state of the application. It is initialized as an empty object `{}` by `unidirectionalDataFlow`.
+    - `setState`: A function to update the state. It accepts a callback function that receives the previous state and should return the new state using [immutable update patterns](https://redux.js.org/usage/structuring-reducers/immutable-update-patterns) (e.g., `setState(prevState => ({ ...prevState, newProperty: 'value' }))`). Invoking `setState` triggers `unidirectionalDataFlow` to re-execute the `main` function with the updated state.
 
 #### How it Works:
 
 1.  `unidirectionalDataFlow` initializes an internal `state` variable to an empty object (`{}`).
 2.  It defines a `setState` function. When this `setState(nextStateFn)` is called:
     a. The new state is computed: `state = nextStateFn(state)`.
-    b. The `viz` function is called again with the `container`, the newly updated `state`, and the same (stable) `setState` function: `viz(container, state, setState)`.
-3.  Initially, `unidirectionalDataFlow` calls `viz(container, state, setState)` once to perform the first render with the initial empty state.
+    b. The `main` function is called again with the `container`, and an object containing the newly updated `state` and the same (stable) `setState` function: `main(container, {state, setState})`.
+3.  Initially, `unidirectionalDataFlow` calls `main(container, {state, setState})` once to perform the first render with the initial empty state.
 
 This utility is fundamental for structuring D3 (or other rendering library) visualizations in a way that is self-contained and can be easily integrated into various JavaScript frameworks or run in a vanilla JavaScript environment. For a more detailed explanation of the pattern itself, see [The Solution: Unidirectional Data Flow](#the-solution-unidirectional-data-flow).
 
@@ -193,8 +194,8 @@ The example under [Vanilla JS](#vanilla-js) in the Rosetta Stone section also de
 
 This section provides concrete examples of how to integrate a D3.js visualization using the unidirectional data flow pattern into various JavaScript frameworks and vanilla JavaScript setups. Each example aims to be a minimal, runnable project, typically set up with Vite.
 
-The core visualization logic (referred to as `viz` or `main` in the examples) is assumed to follow the signature:
-`viz(container, state, setState)`
+The core visualization logic (referred to as `main` in the examples) is assumed to follow the signature:
+`main(container, {state, setState})`
 
 You can find these examples in the `rosetta-stone` directory of this repository:
 
@@ -206,10 +207,10 @@ You can find these examples in the `rosetta-stone` directory of this repository:
 
 These examples demonstrate how to manage state and trigger re-renders of the D3 visualization from within each specific framework, leveraging the utilities provided by `d3-rosetta` where applicable (like `unidirectionalDataFlow` for the vanilla JS example).
 
-In general, when integrating a `viz` function into a framework like **React, Svelte, or Vue**, developers should use the framework's native primitives for memoization and side effects, namely:
+In general, when integrating a `main` function into a framework like **React, Svelte, or Vue**, developers should use the framework's native primitives for memoization and side effects, namely:
 
 - In **React**, use `useMemo` and `useEffect`.
 - In **Svelte**, use reactive declarations (`$:`) and `onMount`/`onDestroy`.
 - In **Vue**, use `computed` and `watchEffect`.
 
-The core pattern that `d3-rosetta` champions is the `viz(container, state, setState)` function signature and the unidirectional data flow. The helper utilities are a temporary bridge for non-framework environments. The long-term vision is for the `rosetta-stone` examples to demonstrate how to best integrate the core pattern using the host framework's own powerful and idiomatic tools for managing state, side effects, and performance.
+The core pattern that `d3-rosetta` champions is the `main(container, {state, setState})` function signature and the unidirectional data flow. The helper utilities are a temporary bridge for non-framework environments. The long-term vision is for the `rosetta-stone` examples to demonstrate how to best integrate the core pattern using the host framework's own powerful and idiomatic tools for managing state, side effects, and performance.

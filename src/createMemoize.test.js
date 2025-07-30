@@ -9,7 +9,7 @@ test('adds 1 + 2 to equal 3', () => {
 test('does not recompute if dependencies unchanged (zero dependencies)', () => {
   const container = {};
   let invocationCount = 0;
-  const main = () => {
+  const viz = () => {
     const memoize = createMemoize(container);
     const computed = memoize(() => {
       invocationCount++;
@@ -18,9 +18,9 @@ test('does not recompute if dependencies unchanged (zero dependencies)', () => {
     expect(computed).toBe(3);
   };
 
-  main();
+  viz();
   expect(invocationCount).toBe(1);
-  main();
+  viz();
   expect(invocationCount).toBe(1);
 });
 
@@ -29,7 +29,7 @@ test('does not recompute if dependencies unchanged (2 dependencies)', () => {
   let invocationCount = 0;
   let a = 1;
   let b = 2;
-  const main = () => {
+  const viz = () => {
     const memoize = createMemoize(container);
     const computed = memoize(() => {
       invocationCount++;
@@ -38,9 +38,9 @@ test('does not recompute if dependencies unchanged (2 dependencies)', () => {
     expect(computed).toBe(3);
   };
 
-  main();
+  viz();
   expect(invocationCount).toBe(1);
-  main();
+  viz();
   expect(invocationCount).toBe(1);
 });
 
@@ -49,7 +49,7 @@ test('does recompute if dependencies changed', () => {
   let invocationCount = 0;
   let a = 1;
   let b = 2;
-  const main = () => {
+  const viz = () => {
     const memoize = createMemoize(container);
     const computed = memoize(() => {
       invocationCount++;
@@ -58,10 +58,10 @@ test('does recompute if dependencies changed', () => {
     expect(computed).toBe(a + b);
   };
 
-  main();
+  viz();
   expect(invocationCount).toBe(1);
   a = 2;
-  main();
+  viz();
   expect(invocationCount).toBe(2);
 });
 
@@ -70,7 +70,7 @@ test('multiple invocations on one instance', () => {
   let invocationCountBSquared = 0;
   let a = 1;
   let b = 2;
-  const main = ({ container }) => {
+  const viz = ({ container }) => {
     const memoize = createMemoize(container);
 
     const aSquared = memoize(() => {
@@ -90,31 +90,31 @@ test('multiple invocations on one instance', () => {
   expect(invocationCountBSquared).toBe(0);
 
   const container = {};
-  main({ container });
+  viz({ container });
   expect(invocationCountASquared).toBe(1);
   expect(invocationCountBSquared).toBe(1);
 
-  main({ container });
+  viz({ container });
   expect(invocationCountASquared).toBe(1);
   expect(invocationCountBSquared).toBe(1);
 
   a = 2;
-  main({ container });
+  viz({ container });
   expect(invocationCountASquared).toBe(2);
   expect(invocationCountBSquared).toBe(1);
 
   b = 3;
-  main({ container });
+  viz({ container });
   expect(invocationCountASquared).toBe(2);
   expect(invocationCountBSquared).toBe(2);
 
-  main({ container });
+  viz({ container });
   expect(invocationCountASquared).toBe(2);
   expect(invocationCountBSquared).toBe(2);
 
   a = 3;
   b = 4;
-  main({ container });
+  viz({ container });
   expect(invocationCountASquared).toBe(3);
   expect(invocationCountBSquared).toBe(3);
 });

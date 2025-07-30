@@ -4,7 +4,7 @@
 
 <script setup>
 import { ref, onMounted, reactive, watch } from 'vue';
-import { main } from './viz'; // Imports the D3 visualization logic
+import { viz } from './viz'; // Imports the D3 visualization logic
 
 const containerRef = ref(null);
 // Use reactive for the state object to make it deeply reactive.
@@ -34,7 +34,10 @@ onMounted(() => {
   // Initial call to render the D3 visualization when the component mounts
   // and the container div (containerRef.value) is available.
   if (containerRef.value) {
-    main(containerRef.value, { state: vueState, setState: setStateWrapper });
+    viz(containerRef.value, {
+      state: vueState,
+      setState: setStateWrapper,
+    });
   }
 });
 
@@ -44,7 +47,10 @@ watch(
   vueState,
   () => {
     if (containerRef.value) {
-      main(containerRef.value, { state: vueState, setState: setStateWrapper });
+      viz(containerRef.value, {
+        state: vueState,
+        setState: setStateWrapper,
+      });
     }
   },
   { deep: true },

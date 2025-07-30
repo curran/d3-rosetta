@@ -7,7 +7,7 @@ import {
   ChangeDetectorRef,
   NgZone,
 } from '@angular/core';
-import { main } from './viz'; // Imports the D3 visualization logic
+import { viz } from './viz'; // Imports the D3 visualization logic
 
 @Component({
   selector: 'app-root', // Standard Angular root selector for the main app component
@@ -40,13 +40,13 @@ export class AppComponent implements AfterViewInit {
     // to prevent Angular from running unnecessary change detection cycles triggered by D3's own events or timers.
     this.ngZone.runOutsideAngular(() => {
       this.state = updaterFn(this.state); // Update the component's state
-      // Call the D3 main rendering function with the new state.
+      // Call the D3 viz rendering function with the new state.
       // Ensure the container element is available.
       if (this.containerRef?.nativeElement) {
-        main(
-          this.containerRef.nativeElement,
-          { state: this.state, setState: this.setStateWrapper },
-        );
+        viz(this.containerRef.nativeElement, {
+          state: this.state,
+          setState: this.setStateWrapper,
+        });
       }
     });
     // After the state is updated and D3 has re-rendered (potentially),
@@ -68,7 +68,10 @@ export class AppComponent implements AfterViewInit {
     // Initial call to render the D3 visualization.
     // Run this initial rendering outside the Angular zone as well.
     this.ngZone.runOutsideAngular(() => {
-      main(container, { state: this.state, setState: this.setStateWrapper });
+      viz(container, {
+        state: this.state,
+        setState: this.setStateWrapper,
+      });
     });
     // Trigger change detection after the initial render.
     this.cdr.detectChanges();

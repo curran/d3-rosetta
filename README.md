@@ -204,10 +204,43 @@ The core visualization logic (referred to as `viz` in the examples) is assumed t
 You can find these examples in the `rosetta-stone` directory of this repository:
 
 - **Vanilla JS (HTML)**: See `rosetta-stone/vanilla-html/`
+
+```
+cd rosetta-stone/vanilla-html
+npx http-server
+```
+
 - **React (Vite)**: See `rosetta-stone/react-vite/`
+
+```
+cd rosetta-stone/react-vite
+npm install
+npm run dev
+```
+
 - **Svelte (Vite)**: See `rosetta-stone/svelte-vite/`
+
+```
+cd rosetta-stone/svelte-vite
+npm install
+npm run dev
+```
+
 - **Vue (Vite)**: See `rosetta-stone/vue-vite/`
+
+```
+cd rosetta-stone/vue-vite
+npm install
+npm run dev
+```
+
 - **Angular (Vite)**: See `rosetta-stone/angular-vite/`
+
+```
+cd rosetta-stone/angular-vite
+npm install
+npm run dev
+```
 
 These examples demonstrate how to manage state and trigger re-renders of the D3 visualization from within each specific framework, leveraging the utilities provided by `d3-rosetta` where applicable (like `unidirectionalDataFlow` for the vanilla JS example).
 

@@ -5,8 +5,8 @@ export type SetState<S> = (
   updater: (prevState: S) => S,
 ) => void;
 
-export type MainFunction<S, C> = (
-  container: C,
+export type VizFunction<S> = (
+  container: HTMLDivElement,
   options: {
     state: S;
     setState: SetState<S>;
@@ -67,11 +67,11 @@ export function createMemoize(
  * Establishes and manages a unidirectional data flow pattern for a visualization.
  *
  * @param container A DOM element or object where the visualization will be rendered or attached.
- * @param main A function that encapsulates the rendering logic of the visualization.
+ * @param viz A function that encapsulates the rendering logic of the visualization.
  */
-export function unidirectionalDataFlow<S, C>(
-  container: C,
-  main: MainFunction<S, C>,
+export function unidirectionalDataFlow<S>(
+  container: HTMLDivElement,
+  viz: VizFunction<S>,
 ): void;
 
 /**

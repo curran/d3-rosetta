@@ -1,7 +1,0 @@
-/* Component-specific styles for AppComponent */
-.viz-container {
-  height: 100vh;
-  width: 100vw; /* Ensure it takes full width */
-  display: block; /* Ensure it behaves as a block element */
-  background-color: #f9f9f9; /* Example background */
-}

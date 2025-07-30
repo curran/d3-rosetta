@@ -23,7 +23,8 @@
     "test": "vitest run",
     "prettier": "prettier {*.*,**/*.*} --write",
     "build": "vite build",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "upgrade": "ncu -u"
   },
   "repository": {
     "type": "git",
@@ -49,8 +50,9 @@
   "devDependencies": {
     "d3-selection": "^3.0.0",
     "jsdom": "^26.1.0",
-    "prettier": "^3.5.3",
-    "vite": "^6.3.5",
-    "vitest": "^3.2.3"
+    "prettier": "^3.6.2",
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4",
+    "npm-check-updates": "^18.0.2"
   }
 }

@@ -46,6 +46,7 @@ Whenever `setState` is invoked, `viz` re-executes with the new state, ensuring t
 
 - [`one`](#one) - Simplifies the management of single DOM elements within a D3 selection.
 - [`createMemoize`](#creatememoize) - Optimizes expensive calculations by caching results and reusing them when the same inputs are encountered.
+- [`createSideEffect`](#createsideeffect) - Manages side effects with cleanup, such as subscriptions or manual DOM manipulations.
 - [`createStateField`](#createstatefield) - Simplifies creating getters and setters for individual state properties.
 - [`unidirectionalDataFlow`](#unidirectionaldataflow) - Establishes the unidirectional data flow pattern.
 
@@ -114,6 +115,61 @@ export const viz = (container, { state, setState }) => {
     return a + b;
   }, [a, b]);
   console.log(computed); // Outputs the sum of a and b
+};
+```
+
+---
+
+### `createSideEffect`
+
+**`createSideEffect(node)`**
+
+The `createSideEffect` function creates a side effect management function that stores its state on a given `node` (typically a DOM element). This utility is designed for managing side effects, such as setting up subscriptions, timers, or performing manual DOM manipulations that need to be cleaned up when dependencies change. The state for the side effect is associated with the `node`, and the effect is re-run only when its dependencies change.
+
+The `node` parameter is the DOM element on which side effect state (including dependencies and the cleanup function) will be stored. Each call to the returned `sideEffect` function will use a unique property on this `node` to store its data.
+
+```js
+// `container` is typically a DOM element
+const sideEffect = createSideEffect(container);
+```
+
+**`sideEffect(effect, dependencies)`**
+
+The `sideEffect` function, returned by `createSideEffect`, accepts an `effect` function and an array of `dependencies`.
+
+- `effect`: A function that performs the side effect. It can optionally return a `cleanup` function. This `cleanup` function will be executed before the `effect` is re-run due to changed dependencies.
+- `dependencies`: An array of values. If these dependency values are strictly equal (`===`) to the dependencies from the previous call for this specific side effect instance, the `effect` is not re-executed.
+
+This pattern is similar to React's `useEffect` hook and is essential for managing resources and external interactions within a declarative rendering environment.
+
+**`sideEffect.cleanup()`**
+
+The `sideEffect` function also has a `cleanup` method attached to it. Calling `sideEffect.cleanup()` will execute the cleanup functions for all side effects managed by this instance and remove their state from the `node`. This is useful for cleaning up all subscriptions or other resources when a component is unmounted. After calling this, subsequent renders will re-initialize the side effects from scratch.
+
+#### Example:
+
+```javascript
+import { createSideEffect } from 'd3-rosetta';
+
+export const viz = (container, state, setState) => {
+  const { a, b } = state;
+  const sideEffect = createSideEffect(container); // `container` is the DOM node here
+
+  sideEffect(() => {
+    // This code runs when `a` or `b` changes.
+    console.log('Effect ran with a:', a, 'and b:', b);
+
+    // Return a cleanup function.
+    // This will run before the effect runs again.
+    return () => {
+      console.log(
+        'Cleaning up previous effect with a:',
+        a,
+        'and b:',
+        b,
+      );
+    };
+  }, [a, b]);
 };
 ```
 
